@@ -1,0 +1,182 @@
+[Fri Jul 24 16:57:17 2026] Failed to listen on 0.0.0.1:8005 (reason: Cannot assign requested address)
+[Fri Jul 24 16:57:43 2026] PHP 8.5.1 Development Server (http://0.0.0.0:8005) started
+[Fri Jul 24 16:57:59 2026] 127.0.0.1:47396 Accepted
+[Fri Jul 24 16:57:59 2026] 127.0.0.1:47398 Accepted
+[Fri Jul 24 16:58:01 2026] 127.0.0.1:47396 [200]: GET /index.html
+[Fri Jul 24 16:58:01 2026] 127.0.0.1:47396 Closing
+[Fri Jul 24 16:58:01 2026] 127.0.0.1:47398 [200]: GET /trace.js
+[Fri Jul 24 16:58:01 2026] 127.0.0.1:47398 Closing
+[Fri Jul 24 16:58:02 2026] 127.0.0.1:47408 Accepted
+[Fri Jul 24 16:58:02 2026] 127.0.0.1:47408 [200]: POST /trak.php
+[Fri Jul 24 16:58:02 2026] 127.0.0.1:47408 Closing
+[Fri Jul 24 16:58:04 2026] 127.0.0.1:47424 Accepted
+[Fri Jul 24 16:58:04 2026] 127.0.0.1:47424 [200]: GET /manifest.json
+[Fri Jul 24 16:58:04 2026] 127.0.0.1:47424 Closing
+[Fri Jul 24 16:58:04 2026] 127.0.0.1:47440 Accepted
+[Fri Jul 24 16:58:04 2026] 127.0.0.1:47440 [200]: GET /favicon.png
+[Fri Jul 24 16:58:04 2026] 127.0.0.1:47440 Closing
+[Fri Jul 24 16:58:04 2026] 127.0.0.1:47452 Accepted
+[Fri Jul 24 16:58:04 2026] 127.0.0.1:47452 [200]: GET /favicon.png
+[Fri Jul 24 16:58:04 2026] 127.0.0.1:47462 Accepted
+[Fri Jul 24 16:58:04 2026] 127.0.0.1:47462 [200]: GET /service-worker.js
+[Fri Jul 24 16:58:04 2026] 127.0.0.1:47452 Closing
+[Fri Jul 24 16:58:04 2026] 127.0.0.1:47462 Closing
+[Fri Jul 24 16:58:04 2026] 127.0.0.1:47472 Accepted
+[Fri Jul 24 16:58:04 2026] 127.0.0.1:47484 Accepted
+[Fri Jul 24 16:58:04 2026] 127.0.0.1:47488 Accepted
+[Fri Jul 24 16:58:04 2026] 127.0.0.1:47472 [200]: GET /index.html
+[Fri Jul 24 16:58:04 2026] 127.0.0.1:47484 [200]: GET /manifest.json
+[Fri Jul 24 16:58:04 2026] 127.0.0.1:47488 [200]: GET /favicon.png
+[Fri Jul 24 16:58:04 2026] 127.0.0.1:47472 Closing
+[Fri Jul 24 16:58:04 2026] 127.0.0.1:47484 Closing
+[Fri Jul 24 16:58:04 2026] 127.0.0.1:47488 Closing
+[Fri Jul 24 16:58:04 2026] 127.0.0.1:47492 Accepted
+[Fri Jul 24 16:58:04 2026] 127.0.0.1:47492 [200]: GET /favicon.ico
+[Fri Jul 24 16:58:04 2026] 127.0.0.1:47492 Closing
+[Fri Jul 24 16:58:07 2026] 127.0.0.1:35238 Accepted
+[Fri Jul 24 16:58:07 2026] 127.0.0.1:35238 [200]: GET /song5.mp3
+[Fri Jul 24 16:58:07 2026] 127.0.0.1:35238 Closing
+[Fri Jul 24 16:58:07 2026] 127.0.0.1:35242 Accepted
+[Fri Jul 24 16:58:07 2026] 127.0.0.1:35242 [200]: GET /song3.mp3
+[Fri Jul 24 16:58:07 2026] 127.0.0.1:35242 Closing
+[Fri Jul 24 16:58:07 2026] 127.0.0.1:35250 Accepted
+[Fri Jul 24 16:58:07 2026] 127.0.0.1:35250 [200]: GET /song4.mp3
+[Fri Jul 24 16:58:07 2026] 127.0.0.1:35250 Closing
+[Fri Jul 24 16:58:08 2026] 127.0.0.1:35262 Accepted
+[Fri Jul 24 16:58:08 2026] 127.0.0.1:35262 [200]: GET /song2.mp3
+[Fri Jul 24 16:58:08 2026] 127.0.0.1:35262 Closing
+[Fri Jul 24 16:58:22 2026] 127.0.0.1:58202 Accepted
+[Fri Jul 24 16:58:22 2026] 127.0.0.1:58202 [200]: POST /trak.php
+[Fri Jul 24 16:58:22 2026] 127.0.0.1:58202 Closing
+[Fri Jul 24 16:58:42 2026] 127.0.0.1:43386 Accepted
+[Fri Jul 24 16:58:42 2026] 127.0.0.1:43386 [200]: POST /trak.php
+[Fri Jul 24 16:58:42 2026] 127.0.0.1:43386 Closing
+[Fri Jul 24 16:59:02 2026] 127.0.0.1:35404 Accepted
+[Fri Jul 24 16:59:02 2026] 127.0.0.1:35404 [200]: POST /trak.php
+[Fri Jul 24 16:59:02 2026] 127.0.0.1:35404 Closing
+[Fri Jul 24 16:59:22 2026] 127.0.0.1:39886 Accepted
+[Fri Jul 24 16:59:22 2026] 127.0.0.1:39886 [200]: POST /trak.php
+[Fri Jul 24 16:59:22 2026] 127.0.0.1:39886 Closing
+[Fri Jul 24 16:59:42 2026] 127.0.0.1:57836 Accepted
+[Fri Jul 24 16:59:42 2026] 127.0.0.1:57836 [200]: POST /trak.php
+[Fri Jul 24 16:59:42 2026] 127.0.0.1:57836 Closing
+[Fri Jul 24 16:59:45 2026] 127.0.0.1:57846 Accepted
+[Fri Jul 24 16:59:45 2026] 127.0.0.1:57846 [200]: GET /song1.mp3
+[Fri Jul 24 16:59:45 2026] 127.0.0.1:57846 Closing
+[Fri Jul 24 17:00:02 2026] 127.0.0.1:60692 Accepted
+[Fri Jul 24 17:00:02 2026] 127.0.0.1:60692 [200]: POST /trak.php
+[Fri Jul 24 17:00:02 2026] 127.0.0.1:60692 Closing
+[Fri Jul 24 17:00:22 2026] 127.0.0.1:42008 Accepted
+[Fri Jul 24 17:00:22 2026] 127.0.0.1:42008 [200]: POST /trak.php
+[Fri Jul 24 17:00:22 2026] 127.0.0.1:42008 Closing
+[Fri Jul 24 17:00:42 2026] 127.0.0.1:50498 Accepted
+[Fri Jul 24 17:00:42 2026] 127.0.0.1:50498 [200]: POST /trak.php
+[Fri Jul 24 17:00:42 2026] 127.0.0.1:50498 Closing
+[Fri Jul 24 17:01:02 2026] 127.0.0.1:45998 Accepted
+[Fri Jul 24 17:01:02 2026] 127.0.0.1:45998 [200]: POST /trak.php
+[Fri Jul 24 17:01:02 2026] 127.0.0.1:45998 Closing
+[Fri Jul 24 17:01:22 2026] 127.0.0.1:55832 Accepted
+[Fri Jul 24 17:01:22 2026] 127.0.0.1:55832 [200]: POST /trak.php
+[Fri Jul 24 17:01:22 2026] 127.0.0.1:55832 Closing
+[Fri Jul 24 17:01:42 2026] 127.0.0.1:57972 Accepted
+[Fri Jul 24 17:01:42 2026] 127.0.0.1:57972 [200]: POST /trak.php
+[Fri Jul 24 17:01:42 2026] 127.0.0.1:57972 Closing
+[Fri Jul 24 17:02:02 2026] 127.0.0.1:37872 Accepted
+[Fri Jul 24 17:02:02 2026] 127.0.0.1:37872 [200]: POST /trak.php
+[Fri Jul 24 17:02:02 2026] 127.0.0.1:37872 Closing
+[Fri Jul 24 17:02:22 2026] 127.0.0.1:37988 Accepted
+[Fri Jul 24 17:02:22 2026] 127.0.0.1:37988 [200]: POST /trak.php
+[Fri Jul 24 17:02:22 2026] 127.0.0.1:37988 Closing
+[Fri Jul 24 17:02:42 2026] 127.0.0.1:35776 Accepted
+[Fri Jul 24 17:02:42 2026] 127.0.0.1:35776 [200]: POST /trak.php
+[Fri Jul 24 17:02:42 2026] 127.0.0.1:35776 Closing
+[Fri Jul 24 17:03:02 2026] 127.0.0.1:51628 Accepted
+[Fri Jul 24 17:03:02 2026] 127.0.0.1:51628 [200]: POST /trak.php
+[Fri Jul 24 17:03:02 2026] 127.0.0.1:51628 Closing
+[Fri Jul 24 17:03:22 2026] 127.0.0.1:36460 Accepted
+[Fri Jul 24 17:03:22 2026] 127.0.0.1:36460 [200]: POST /trak.php
+[Fri Jul 24 17:03:22 2026] 127.0.0.1:36460 Closing
+[Fri Jul 24 17:03:42 2026] 127.0.0.1:57596 Accepted
+[Fri Jul 24 17:03:42 2026] 127.0.0.1:57596 [200]: POST /trak.php
+[Fri Jul 24 17:03:42 2026] 127.0.0.1:57596 Closing
+[Fri Jul 24 18:25:23 2026] 127.0.0.1:54262 Accepted
+[Fri Jul 24 18:25:23 2026] 127.0.0.1:54264 Accepted
+[Fri Jul 24 18:25:26 2026] 127.0.0.1:54262 [200]: POST /trak.php
+[Fri Jul 24 18:25:26 2026] 127.0.0.1:54262 Closing
+[Fri Jul 24 18:25:26 2026] 127.0.0.1:54272 Accepted
+[Fri Jul 24 18:25:26 2026] 127.0.0.1:54272 [200]: GET /manifest.json
+[Fri Jul 24 18:25:26 2026] 127.0.0.1:54272 Closing
+[Fri Jul 24 18:25:27 2026] 127.0.0.1:54264 [200]: GET /service-worker.js
+[Fri Jul 24 18:25:27 2026] 127.0.0.1:54264 Closing
+[Fri Jul 24 18:25:28 2026] 127.0.0.1:46472 Accepted
+[Fri Jul 24 18:25:28 2026] 127.0.0.1:46472 [200]: GET /song3.mp3
+[Fri Jul 24 18:25:28 2026] 127.0.0.1:46472 Closing
+[Fri Jul 24 18:25:28 2026] 127.0.0.1:46474 Accepted
+[Fri Jul 24 18:25:28 2026] 127.0.0.1:46474 [200]: GET /song4.mp3
+[Fri Jul 24 18:25:28 2026] 127.0.0.1:46474 Closing
+[Fri Jul 24 18:25:28 2026] 127.0.0.1:46484 Accepted
+[Fri Jul 24 18:25:28 2026] 127.0.0.1:46484 [200]: GET /song5.mp3
+[Fri Jul 24 18:25:28 2026] 127.0.0.1:46484 Closing
+[Fri Jul 24 18:25:29 2026] 127.0.0.1:46488 Accepted
+[Fri Jul 24 18:25:29 2026] 127.0.0.1:46488 [200]: GET /song1.mp3
+[Fri Jul 24 18:25:29 2026] 127.0.0.1:46488 Closing
+[Fri Jul 24 18:25:45 2026] 127.0.0.1:53098 Accepted
+[Fri Jul 24 18:25:46 2026] 127.0.0.1:53098 [200]: POST /trak.php
+[Fri Jul 24 18:25:46 2026] 127.0.0.1:53098 Closing
+[Fri Jul 24 18:26:05 2026] 127.0.0.1:51756 Accepted
+[Fri Jul 24 18:26:06 2026] 127.0.0.1:51756 [200]: POST /trak.php
+[Fri Jul 24 18:26:06 2026] 127.0.0.1:51756 Closing
+[Fri Jul 24 18:26:26 2026] 127.0.0.1:37658 Accepted
+[Fri Jul 24 18:26:26 2026] 127.0.0.1:37658 [200]: POST /trak.php
+[Fri Jul 24 18:26:26 2026] 127.0.0.1:37658 Closing
+[Fri Jul 24 18:26:45 2026] 127.0.0.1:33508 Accepted
+[Fri Jul 24 18:26:46 2026] 127.0.0.1:33508 [200]: POST /trak.php
+[Fri Jul 24 18:26:46 2026] 127.0.0.1:33508 Closing
+[Fri Jul 24 18:27:04 2026] 127.0.0.1:35442 Accepted
+[Fri Jul 24 18:27:04 2026] 127.0.0.1:35442 [200]: GET /song2.mp3
+[Fri Jul 24 18:27:04 2026] 127.0.0.1:35442 Closing
+[Fri Jul 24 18:27:05 2026] 127.0.0.1:35458 Accepted
+[Fri Jul 24 18:27:06 2026] 127.0.0.1:35458 [200]: POST /trak.php
+[Fri Jul 24 18:27:06 2026] 127.0.0.1:35458 Closing
+[Fri Jul 24 18:27:25 2026] 127.0.0.1:43388 Accepted
+[Fri Jul 24 18:27:26 2026] 127.0.0.1:43388 [200]: POST /trak.php
+[Fri Jul 24 18:27:26 2026] 127.0.0.1:43388 Closing
+[Fri Jul 24 18:27:45 2026] 127.0.0.1:51074 Accepted
+[Fri Jul 24 18:27:46 2026] 127.0.0.1:51074 [200]: POST /trak.php
+[Fri Jul 24 18:27:46 2026] 127.0.0.1:51074 Closing
+[Fri Jul 24 18:28:05 2026] 127.0.0.1:56876 Accepted
+[Fri Jul 24 18:28:06 2026] 127.0.0.1:56876 [200]: POST /trak.php
+[Fri Jul 24 18:28:06 2026] 127.0.0.1:56876 Closing
+[Fri Jul 24 18:28:25 2026] 127.0.0.1:53522 Accepted
+[Fri Jul 24 18:28:26 2026] 127.0.0.1:53522 [200]: POST /trak.php
+[Fri Jul 24 18:28:26 2026] 127.0.0.1:53522 Closing
+[Fri Jul 24 18:28:46 2026] 127.0.0.1:51204 Accepted
+[Fri Jul 24 18:28:46 2026] 127.0.0.1:51204 [200]: POST /trak.php
+[Fri Jul 24 18:28:46 2026] 127.0.0.1:51204 Closing
+[Fri Jul 24 18:29:06 2026] 127.0.0.1:36418 Accepted
+[Fri Jul 24 18:29:06 2026] 127.0.0.1:36418 [200]: POST /trak.php
+[Fri Jul 24 18:29:06 2026] 127.0.0.1:36418 Closing
+[Fri Jul 24 18:29:25 2026] 127.0.0.1:47632 Accepted
+[Fri Jul 24 18:29:26 2026] 127.0.0.1:47632 [200]: POST /trak.php
+[Fri Jul 24 18:29:26 2026] 127.0.0.1:47632 Closing
+[Fri Jul 24 18:29:45 2026] 127.0.0.1:50204 Accepted
+[Fri Jul 24 18:29:46 2026] 127.0.0.1:50204 [200]: POST /trak.php
+[Fri Jul 24 18:29:46 2026] 127.0.0.1:50204 Closing
+[Fri Jul 24 18:30:05 2026] 127.0.0.1:43446 Accepted
+[Fri Jul 24 18:30:06 2026] 127.0.0.1:43446 [200]: POST /trak.php
+[Fri Jul 24 18:30:06 2026] 127.0.0.1:43446 Closing
+[Fri Jul 24 18:30:25 2026] 127.0.0.1:37922 Accepted
+[Fri Jul 24 18:30:26 2026] 127.0.0.1:37922 [200]: POST /trak.php
+[Fri Jul 24 18:30:26 2026] 127.0.0.1:37922 Closing
+[Fri Jul 24 18:30:45 2026] 127.0.0.1:42454 Accepted
+[Fri Jul 24 18:30:46 2026] 127.0.0.1:42454 [200]: POST /trak.php
+[Fri Jul 24 18:30:46 2026] 127.0.0.1:42454 Closing
+[Fri Jul 24 18:31:06 2026] 127.0.0.1:50754 Accepted
+[Fri Jul 24 18:31:06 2026] 127.0.0.1:50754 [200]: POST /trak.php
+[Fri Jul 24 18:31:06 2026] 127.0.0.1:50754 Closing
+[Fri Jul 24 18:31:26 2026] 127.0.0.1:55604 Accepted
+[Fri Jul 24 18:31:26 2026] 127.0.0.1:55604 [200]: POST /trak.php
+[Fri Jul 24 18:31:26 2026] 127.0.0.1:55604 Closing
+[Fri Jul 24 20:15:06 2026] PHP 8.5.1 Development Server (http://0.0.0.0:8005) started
+[Fri Jul 24 20:15:26 2026] PHP 8.5.1 Development Server (http://0.0.0.0:8005) started
+[Mon Jul 27 08:52:03 2026] PHP 8.5.1 Development Server (http://0.0.0.0:8005) started

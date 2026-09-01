@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Vault</title>
+<link rel="apple-touch-icon" sizes="180x180" href="favicon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="rgba(0, 0, 0, 0)">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Vault">
+<meta property="og:title" content="Vault">
+<meta property="og:description" content="encrypted">
+<meta property="og:image" content="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
+  }
+</script>
+<style>
+:root{
+  --bg-0:#0a0c0f;
+  --panel:linear-gradient(160deg,#2b2f37 0%,#181b20 70%,#101215 100%);
+  --panel-border:rgba(255,255,255,.07);
+  --accent:#3b9dff;
+  --accent-dim:rgba(59,157,255,.18);
+  --accent-line:rgba(59,157,255,.35);
+  --success:#2ee6a6;
+  --success-dim:rgba(46,230,166,.15);
+  --danger:#ff5468;
+  --danger-dim:rgba(255,84,104,.15);
+  --text:#eef2f7;
+  --text-dim:#8b95a5;
+  --text-faint:#565f6c;
+  --mono:'JetBrains Mono',monospace;
+  --display:'Space Grotesk',sans-serif;
+  --body:'Inter',sans-serif;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;min-height:100vh;display:flex;justify-content:center;align-items:center;
+  background:
+    radial-gradient(circle at 30% 15%, rgba(59,157,255,.08), transparent 45%),
+    var(--bg-0);
+  font-family:var(--body);color:var(--text);overflow:hidden;
+}
+.screen{display:none;flex-direction:column;align-items:center;justify-content:center;width:100%;position:absolute;inset:0;}
+.screen.active{display:flex}
+
+#logo{
+  width:120px;height:120px;background:url("favicon.png") center/contain no-repeat;
+  animation:pulse 1.5s infinite alternate;filter:drop-shadow(0 0 24px rgba(59,157,255,.35));
+}
+@keyframes pulse{from{transform:scale(1)}to{transform:scale(1.12)}}
+
+.vault-panel{
+  width:340px;max-width:92vw;
+  background:var(--panel);border:1px solid var(--panel-border);border-radius:28px;
+  box-shadow:inset 0 0 30px rgba(0,0,0,.55), 0 25px 60px rgba(0,0,0,.6);
+  padding:28px 22px 22px;display:flex;flex-direction:column;align-items:center;gap:18px;
+}
+.vp-title{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:3px;}
+.vp-sub{font-size:12px;color:var(--text-dim);margin-top:-12px;text-align:center;letter-spacing:.3px;}
+
+.radar-wrap{position:relative;width:190px;height:190px;}
+.radar-wrap svg{width:100%;height:100%;transform:rotate(-90deg);}
+.radar-seg{fill:none;stroke-width:9;stroke-linecap:round;transition:stroke .35s;}
+.radar-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.radar-count{font-family:var(--mono);font-size:34px;font-weight:600;letter-spacing:1px;}
+.radar-label{font-size:10px;letter-spacing:3px;color:var(--text-dim);margin-top:2px;}
+
+.method-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.method-btn{
+  width:56px;height:56px;border-radius:50%;
+  background:rgba(255,255,255,.03);border:1.5px solid var(--accent-line);
+  color:var(--accent);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;position:relative;transition:all .25s;
+}
+.method-btn svg{width:24px;height:24px;}
+.method-btn .lbl{position:absolute;bottom:-18px;font-size:9px;letter-spacing:.5px;color:var(--text-faint);white-space:nowrap;}
+.method-btn.pass{border-color:var(--success);color:var(--success);box-shadow:0 0 16px var(--success-dim);}
+.method-btn.fail{border-color:var(--danger);color:var(--danger);animation:shake .4s;}
+.method-btn.unavailable{opacity:.28;cursor:not-allowed;}
+.method-btn:active{transform:scale(.93);}
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-6px)}
+  40%{transform:translateX(6px)}
+  60%{transform:translateX(-4px)}
+  80%{transform:translateX(4px)}
+}
+
+.status-msg{font-size:13px;color:var(--text-dim);text-align:center;min-height:16px;}
+.attempts-msg{font-size:11px;color:var(--danger);text-align:center;min-height:14px;letter-spacing:.3px;}
+
+.method-modal{
+  position:fixed;inset:0;background:rgba(6,7,9,.82);backdrop-filter:blur(6px);
+  display:none;align-items:center;justify-content:center;z-index:50;
+}
+.method-modal.active{display:flex;}
+.modal-card{
+  width:300px;max-width:88vw;background:var(--panel);border:1px solid var(--panel-border);
+  border-radius:24px;padding:24px 20px;display:flex;flex-direction:column;align-items:center;gap:16px;
+  box-shadow:0 25px 60px rgba(0,0,0,.6);position:relative;
+}
+.modal-title{font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:1.5px;}
+.modal-close{position:absolute;top:14px;right:16px;color:var(--text-dim);font-size:20px;cursor:pointer;background:none;border:none;}
+
+.pin-dots{display:flex;gap:10px;}
+.pin-dot{width:12px;height:12px;border-radius:50%;border:1.5px solid var(--accent-line);background:transparent;transition:all .2s;}
+.pin-dot.filled{background:var(--accent);border-color:var(--accent);}
+.keypad{display:grid;grid-template-columns:repeat(3,60px);gap:10px;}
+.key{
+  width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,.04);
+  border:1px solid var(--panel-border);color:var(--text);font-family:var(--mono);font-size:20px;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+}
+.key:active{background:var(--accent-dim);}
+.key.action{color:var(--accent);font-size:13px;font-family:var(--body);letter-spacing:.5px;}
+
+.face-video-wrap{width:220px;height:220px;border-radius:50%;overflow:hidden;border:3px solid var(--accent-line);position:relative;}
+.face-video-wrap video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1);}
+.scan-ring{position:absolute;inset:-3px;border-radius:50%;border:2px solid transparent;border-top-color:var(--accent);animation:spin 1.4s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.mic-orb{width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,var(--accent-dim),transparent 70%);
+  border:2px solid var(--accent-line);display:flex;align-items:center;justify-content:center;position:relative;}
+.mic-orb.listening{animation:pulseMic 1s ease-in-out infinite;}
+@keyframes pulseMic{0%,100%{box-shadow:0 0 0 0 var(--accent-dim);}50%{box-shadow:0 0 0 14px transparent;}}
+.voice-transcript{font-size:12px;color:var(--text-dim);min-height:16px;text-align:center;font-family:var(--mono);}
+
+.pattern-grid{position:relative;width:210px;height:210px;}
+.pattern-grid canvas{position:absolute;inset:0;}
+.pdot{width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.08);border:2px solid var(--accent-line);position:absolute;}
+.pdot.on{background:var(--accent);box-shadow:0 0 10px var(--accent);}
+
+.btn{
+  font-family:var(--body);font-size:13px;font-weight:600;padding:12px 30px;border-radius:100px;
+  border:1px solid var(--accent-line);cursor:pointer;color:var(--text);background:rgba(59,157,255,.08);
+  letter-spacing:.4px;
+}
+.btn:active{background:var(--accent-dim);}
+
+.gate{display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;}
+.gate .step-desc{font-size:13px;color:var(--text-dim);line-height:1.5;max-width:250px;}
+.gate-icon{width:64px;height:64px;border-radius:50%;border:1.5px solid var(--accent-line);
+  display:flex;align-items:center;justify-content:center;color:var(--accent);}
+.gate-icon svg{width:28px;height:28px;}
+.gate-title{font-family:var(--display);font-weight:700;font-size:18px;letter-spacing:1.5px;}
+</style>
+</head>
+<body>
+
+<div id="splash" class="screen active"><div id="logo"></div></div>
+
+<div id="home" class="screen">
+  <div class="vault-panel" id="vaultPanel">
+    <div class="vp-title">VAULT</div>
+    <div class="vp-sub">Verify at least 3 methods to unlock</div>
+
+    <div class="radar-wrap">
+      <svg viewBox="0 0 190 190"><g id="radarSegs"></g></svg>
+      <div class="radar-center">
+        <div class="radar-count" id="radarCount">0/3</div>
+        <div class="radar-label">VERIFIED</div>
+      </div>
+    </div>
+
+    <div class="method-row" id="methodRow"></div>
+
+    <div class="status-msg" id="statusMsg">Loading…</div>
+    <div class="attempts-msg" id="attemptsMsg"></div>
+  </div>
+</div>
+
+<div id="notConfigured" class="screen">
+  <div class="vault-panel gate">
+    <div class="gate-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3Z"/></svg>
+    </div>
+    <div class="gate-title">VAULT NOT CONFIGURED</div>
+    <div class="step-desc">Ask whoever manages this device to set up the lock methods.</div>
+  </div>
+</div>
+
+<div class="method-modal" id="modalPin">
+  <div class="modal-card">
+    <button class="modal-close" data-close="modalPin">×</button>
+    <div class="modal-title">ENTER PIN</div>
+    <div class="pin-dots" id="pinDots"></div>
+    <div class="keypad" id="pinKeypad"></div>
+  </div>
+</div>
+
+<div class="method-modal" id="modalFace">
+  <div class="modal-card">
+    <button class="modal-close" data-close="modalFace">×</button>
+    <div class="modal-title">FACE VERIFY</div>
+    <div class="face-video-wrap">
+      <div class="scan-ring" id="faceScanRing" style="display:none;"></div>
+      <video id="faceVideo" autoplay playsinline muted></video>
+    </div>
+    <div class="status-msg" id="faceMsg">Position your face in the frame</div>
+    <button class="btn" id="faceCaptureBtn">Scan Face</button>
+  </div>
+</div>
+
+<div class="method-modal" id="modalVoice">
+  <div class="modal-card">
+    <button class="modal-close" data-close="modalVoice">×</button>
+    <div class="modal-title">VOICE VERIFY</div>
+    <div class="mic-orb" id="micOrb">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color:var(--accent)"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Z"/><path d="M19 11a7 7 0 0 1-14 0"/><path d="M12 18v3"/></svg>
+    </div>
+    <div class="voice-transcript" id="voiceTranscript">Tap to speak your passphrase</div>
+    <button class="btn" id="voiceStartBtn">Start Listening</button>
+  </div>
+</div>
+
+<div class="method-modal" id="modalPattern">
+  <div class="modal-card">
+    <button class="modal-close" data-close="modalPattern">×</button>
+    <div class="modal-title">DRAW PATTERN</div>
+    <div class="pattern-grid" id="patternGrid"></div>
+    <button class="btn" id="patternClearBtn">Clear</button>
+  </div>
+</div>
+
+<audio id="tick" src="clicking.wav"></audio>
+<audio id="success" src="unlocked.m4a"></audio>
+<audio id="error" src="error.mp3"></audio>
+
+<script src="vault-common.js"></script>
+<script>
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  history.pushState({page:id},"");
+}
+function safePlay(el){ try{ el.currentTime=0; el.play().catch(()=>{}); }catch(e){} }
+function safeVibrate(p){ if(navigator.vibrate) navigator.vibrate(p); }
+const tickA=document.getElementById('tick'), successA=document.getElementById('success'), errorA=document.getElementById('error');
+
+const REQUIRED_PASSES = 3;
+const METHOD_META = {
+  pin:{label:'PIN', icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="3"/><circle cx="8" cy="10" r="1"/><circle cx="12" cy="10" r="1"/><circle cx="16" cy="10" r="1"/><circle cx="8" cy="14" r="1"/><circle cx="12" cy="14" r="1"/><circle cx="16" cy="14" r="1"/></svg>`},
+  fingerprint:{label:'FINGER', icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3a7 7 0 0 0-7 7v2a13 13 0 0 0 3 8"/><path d="M12 3a7 7 0 0 1 7 7v2c0 1.8-.3 3.4-.8 5"/><path d="M8 10a4 4 0 0 1 8 0v2c0 3-1 6-2.5 8"/><path d="M12 10v3c0 2.5-.6 4.8-1.6 6.7"/></svg>`},
+  face:{label:'FACE', icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="9" cy="10" r="1"/><circle cx="15" cy="10" r="1"/><path d="M9 15c1 1 5 1 6 0"/></svg>`},
+  voice:{label:'VOICE', icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Z"/><path d="M19 11a7 7 0 0 1-14 0"/><path d="M12 18v3"/></svg>`},
+  pattern:{label:'PATTERN', icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="6" r="1.4"/><circle cx="12" cy="6" r="1.4"/><circle cx="18" cy="6" r="1.4"/><circle cx="6" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18" cy="12" r="1.4"/><circle cx="6" cy="18" r="1.4"/><circle cx="12" cy="18" r="1.4"/><circle cx="18" cy="18" r="1.4"/><path d="M6 6 12 12 18 18"/></svg>`}
+};
+
+let enabled = [];
+let attemptState = {};
+let locked = false;
+let lockUntil = 0;
+let lockInterval = null;
+
+async function init(){
+  const minSplash = new Promise(r=>setTimeout(r, 1200));
+  let status;
+  try{
+    status = await VaultApi.get('status');
+  }catch(e){
+    status = { configured:false };
+  }
+  await minSplash;
+
+  if(!status.configured){
+    // Deliberately does NOT navigate to setup.html — an unconfigured vault
+    // stays locked-out-looking rather than pointing regular users at setup.
+    go('notConfigured');
+    return;
+  }
+
+  enabled = status.enabledMethods;
+  locked = status.locked;
+  lockUntil = status.lockUntil;
+  attemptState = {};
+  enabled.forEach(m=>attemptState[m]='idle');
+
+  if(!locked) await VaultApi.post('reset_attempt');
+
+  renderRadar();
+  renderMethods();
+  if(locked){
+    document.getElementById('statusMsg').textContent = "Too many failed attempts";
+    startLockCountdown(lockUntil);
+  } else {
+    document.getElementById('statusMsg').textContent = "Choose a method to verify";
+    if(status.failCount>0) document.getElementById('attemptsMsg').textContent = `Failed attempts: ${status.failCount}`;
+  }
+  go('home');
+}
+
+/* ================= radar ================= */
+function polar(cx,cy,r,angleDeg){ const a=(angleDeg*Math.PI)/180; return {x:cx+r*Math.cos(a), y:cy+r*Math.sin(a)}; }
+function arcPath(cx,cy,r,startDeg,endDeg){
+  const s=polar(cx,cy,r,startDeg), e=polar(cx,cy,r,endDeg);
+  const large = (endDeg-startDeg)%360 > 180 ? 1:0;
+  return `M ${s.x} ${s.y} A ${r} ${r} 0 ${large} 1 ${e.x} ${e.y}`;
+}
+function renderRadar(){
+  const g=document.getElementById('radarSegs');
+  g.innerHTML='';
+  const n=enabled.length;
+  const gap=8;
+  const seg=360/n;
+  enabled.forEach((m,i)=>{
+    const start=i*seg+gap/2, end=(i+1)*seg-gap/2;
+    const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d', arcPath(95,95,84,start,end));
+    path.setAttribute('class','radar-seg');
+    let stroke='rgba(255,255,255,.12)';
+    if(attemptState[m]==='pass') stroke='var(--success)';
+    else if(attemptState[m]==='fail') stroke='var(--danger)';
+    path.setAttribute('stroke', stroke);
+    g.appendChild(path);
+  });
+  const passCount = enabled.filter(m=>attemptState[m]==='pass').length;
+  document.getElementById('radarCount').textContent = passCount+"/"+REQUIRED_PASSES;
+}
+
+function renderMethods(){
+  const row=document.getElementById('methodRow');
+  row.innerHTML='';
+  enabled.forEach(m=>{
+    const meta=METHOD_META[m];
+    const btn=document.createElement('div');
+    btn.className='method-btn '+(attemptState[m]==='pass'?'pass':attemptState[m]==='fail'?'fail':'')+(locked?' unavailable':'');
+    btn.innerHTML=meta.icon+`<span class="lbl">${meta.label}</span>`;
+    if(!locked) btn.onclick=()=>openMethod(m);
+    row.appendChild(btn);
+  });
+}
+
+function openMethod(m){
+  if(locked) return;
+  if(m==='pin') openPin();
+  else if(m==='fingerprint') tryFingerprint();
+  else if(m==='face') openFace();
+  else if(m==='voice') openVoice();
+  else if(m==='pattern') openPattern();
+}
+function closeModal(id){ document.getElementById(id).classList.remove('active'); }
+document.querySelectorAll('.modal-close').forEach(b=>{ b.addEventListener('click', ()=>closeModal(b.dataset.close)); });
+
+/* ================= apply server verify response ================= */
+function applyVerifyResponse(method, res){
+  if(res.locked){
+    locked = true; lockUntil = res.lockUntil;
+    document.getElementById('statusMsg').textContent = "Too many failed attempts";
+    renderMethods();
+    startLockCountdown(lockUntil);
+    return;
+  }
+  safePlay(res.ok ? successA : errorA);
+  safeVibrate(res.ok ? [60] : 200);
+
+  if(res.sessionResult === 'unlocked'){
+    attemptState[method] = 'pass';
+    renderRadar(); renderMethods();
+    document.getElementById('statusMsg').textContent = "Unlocked";
+    safePlay(successA); safeVibrate([100,50,100]);
+    setTimeout(()=>{
+      sessionStorage.setItem("vault_unlocked", Date.now());
+      window.location.href = "system.php";
+    }, 900);
+    return;
+  }
+
+  if(res.sessionResult === 'denied'){
+    attemptState[method] = res.ok ? 'pass' : 'fail';
+    renderRadar(); renderMethods();
+    document.getElementById('statusMsg').textContent = "Access denied";
+    if(res.lockUntil){
+      locked = true; lockUntil = res.lockUntil;
+      startLockCountdown(lockUntil);
+      renderMethods();
+    } else {
+      setTimeout(resetLocalAttempt, 1400);
+    }
+    return;
+  }
+
+  // pending
+  attemptState = res.attemptState;
+  renderRadar(); renderMethods();
+  document.getElementById('statusMsg').textContent = `${res.passCount}/${REQUIRED_PASSES} verified — ${res.remaining} method${res.remaining===1?'':'s'} left`;
+}
+
+function resetLocalAttempt(){
+  enabled.forEach(m=>attemptState[m]='idle');
+  renderRadar(); renderMethods();
+  if(!locked){
+    document.getElementById('statusMsg').textContent = "Choose a method to verify";
+  }
+}
+
+function startLockCountdown(until){
+  clearInterval(lockInterval);
+  const el=document.getElementById('attemptsMsg');
+  lockInterval=setInterval(()=>{
+    const secs=Math.ceil((until-Date.now())/1000);
+    if(secs<=0){
+      clearInterval(lockInterval);
+      el.textContent="";
+      locked=false;
+      resetLocalAttempt();
+      VaultApi.post('reset_attempt');
+      return;
+    }
+    el.textContent = `Locked — try again in ${secs}s`;
+  },500);
+}
+
+/* ================= PIN ================= */
+let pinBuffer=[];
+function openPin(){
+  pinBuffer=[];
+  renderPinDots();
+  const kp=document.getElementById('pinKeypad');
+  kp.innerHTML='';
+  const keys=['1','2','3','4','5','6','7','8','9','clear','0','ok'];
+  keys.forEach(k=>{
+    const el=document.createElement('div');
+    if(k==='clear'){ el.className='key action'; el.textContent='CLR'; el.onclick=()=>{pinBuffer=[];renderPinDots();}; }
+    else if(k==='ok'){ el.className='key action'; el.textContent='OK'; el.onclick=submitPin; }
+    else { el.className='key'; el.textContent=k; el.onclick=()=>{ if(pinBuffer.length<8){ pinBuffer.push(k); safePlay(tickA); renderPinDots(); } }; }
+    kp.appendChild(el);
+  });
+  document.getElementById('modalPin').classList.add('active');
+}
+function renderPinDots(){
+  const d=document.getElementById('pinDots'); d.innerHTML='';
+  const count=Math.max(pinBuffer.length,4);
+  for(let i=0;i<count;i++){
+    const dot=document.createElement('div');
+    dot.className='pin-dot'+(i<pinBuffer.length?' filled':'');
+    d.appendChild(dot);
+  }
+}
+async function submitPin(){
+  const value = pinBuffer.join('');
+  closeModal('modalPin');
+  const res = await VaultApi.post('verify', { method:'pin', value });
+  applyVerifyResponse('pin', res);
+}
+
+/* ================= FINGERPRINT ================= */
+async function tryFingerprint(){
+  if(!webauthnSupported()){
+    const res = await VaultApi.post('verify', { method:'fingerprint', clientVerified:false });
+    applyVerifyResponse('fingerprint', res);
+    return;
+  }
+  let ok=false;
+  try{ ok = await verifyFingerprintDiscoverable(); }
+  catch(e){ ok=false; }
+  const res = await VaultApi.post('verify', { method:'fingerprint', clientVerified: ok });
+  applyVerifyResponse('fingerprint', res);
+}
+
+/* ================= FACE ================= */
+let faceStream=null;
+async function openFace(){
+  document.getElementById('modalFace').classList.add('active');
+  document.getElementById('faceMsg').textContent = "Loading model…";
+  const video=document.getElementById('faceVideo');
+  try{
+    faceStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}});
+    video.srcObject = faceStream;
+    await loadFaceApi();
+    document.getElementById('faceMsg').textContent = "Position your face in the frame";
+  }catch(e){
+    document.getElementById('faceMsg').textContent = "Camera or model unavailable";
+  }
+}
+document.getElementById('faceCaptureBtn').addEventListener('click', async ()=>{
+  const ring=document.getElementById('faceScanRing');
+  ring.style.display='block';
+  document.getElementById('faceMsg').textContent = "Scanning…";
+  try{
+    const video=document.getElementById('faceVideo');
+    const descriptor = await detectFaceDescriptor(video);
+    ring.style.display='none';
+    stopFaceStream();
+    closeModal('modalFace');
+    if(!descriptor){
+      const res = await VaultApi.post('verify', { method:'face', descriptor: [] });
+      applyVerifyResponse('face', res);
+      return;
+    }
+    const res = await VaultApi.post('verify', { method:'face', descriptor });
+    applyVerifyResponse('face', res);
+  }catch(e){
+    ring.style.display='none';
+    stopFaceStream();
+    closeModal('modalFace');
+    const res = await VaultApi.post('verify', { method:'face', descriptor: [] });
+    applyVerifyResponse('face', res);
+  }
+});
+function stopFaceStream(){ if(faceStream){ faceStream.getTracks().forEach(t=>t.stop()); faceStream=null; } }
+
+/* ================= VOICE ================= */
+function openVoice(){
+  document.getElementById('voiceTranscript').textContent = "Tap to speak your passphrase";
+  document.getElementById('modalVoice').classList.add('active');
+}
+document.getElementById('voiceStartBtn').addEventListener('click', ()=>{
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const orb=document.getElementById('micOrb');
+  const tEl=document.getElementById('voiceTranscript');
+  if(!SR){ tEl.textContent="Speech recognition not supported"; return; }
+  const recognition = new SR();
+  recognition.lang='en-US';
+  recognition.interimResults=false;
+  recognition.maxAlternatives=1;
+  orb.classList.add('listening');
+  tEl.textContent = "Listening…";
+  recognition.onresult = async (ev)=>{
+    const transcript = normalizePhrase(ev.results[0][0].transcript);
+    tEl.textContent = transcript || "(nothing heard)";
+    orb.classList.remove('listening');
+    closeModal('modalVoice');
+    const res = await VaultApi.post('verify', { method:'voice', phrase: transcript });
+    applyVerifyResponse('voice', res);
+  };
+  recognition.onerror = async ()=>{
+    orb.classList.remove('listening');
+    tEl.textContent = "Didn't catch that";
+    closeModal('modalVoice');
+    const res = await VaultApi.post('verify', { method:'voice', phrase: '' });
+    applyVerifyResponse('voice', res);
+  };
+  recognition.onend = ()=>orb.classList.remove('listening');
+  recognition.start();
+});
+
+/* ================= PATTERN ================= */
+let patternSeq=[];
+let patternDots=[];
+function buildPatternGrid(){
+  const grid=document.getElementById('patternGrid');
+  grid.innerHTML='';
+  patternDots=[];
+  const positions=[];
+  for(let r=0;r<3;r++) for(let c=0;c<3;c++) positions.push({r,c,idx:r*3+c});
+  positions.forEach(p=>{
+    const dot=document.createElement('div');
+    dot.className='pdot';
+    dot.style.left=(20+p.c*85)+'px';
+    dot.style.top=(20+p.r*85)+'px';
+    dot.dataset.idx=p.idx;
+    grid.appendChild(dot);
+    patternDots.push(dot);
+  });
+  const canvas=document.createElement('canvas');
+  canvas.width=210; canvas.height=210;
+  grid.appendChild(canvas);
+  const ctx=canvas.getContext('2d');
+
+  let drawing=false;
+  function dotCenter(d){ return {x:parseInt(d.style.left)+8, y:parseInt(d.style.top)+8}; }
+  function redraw(mx,my){
+    ctx.clearRect(0,0,210,210);
+    ctx.strokeStyle='#3b9dff'; ctx.lineWidth=3; ctx.lineCap='round';
+    ctx.beginPath();
+    patternSeq.forEach((idx,i)=>{
+      const c=dotCenter(patternDots[idx]);
+      if(i===0) ctx.moveTo(c.x,c.y); else ctx.lineTo(c.x,c.y);
+    });
+    if(mx!==undefined && patternSeq.length) ctx.lineTo(mx,my);
+    ctx.stroke();
+  }
+  function hitTest(x,y){
+    for(const d of patternDots){ const c=dotCenter(d); if(Math.hypot(c.x-x,c.y-y)<18) return d; }
+    return null;
+  }
+  function pos(e){ const rect=canvas.getBoundingClientRect(); const t=e.touches?e.touches[0]:e; return {x:t.clientX-rect.left,y:t.clientY-rect.top}; }
+  function start(e){
+    drawing=true; patternSeq=[]; patternDots.forEach(d=>d.classList.remove('on'));
+    const p=pos(e); const hit=hitTest(p.x,p.y);
+    if(hit){ patternSeq.push(+hit.dataset.idx); hit.classList.add('on'); }
+    redraw();
+  }
+  function move(e){
+    if(!drawing) return;
+    const p=pos(e); const hit=hitTest(p.x,p.y);
+    if(hit && !patternSeq.includes(+hit.dataset.idx)){ patternSeq.push(+hit.dataset.idx); hit.classList.add('on'); }
+    redraw(p.x,p.y);
+  }
+  async function end(){
+    if(!drawing) return;
+    drawing=false; redraw();
+    if(patternSeq.length>=3){
+      const sequence = patternSeq.join('-');
+      setTimeout(async ()=>{
+        closeModal('modalPattern');
+        const res = await VaultApi.post('verify', { method:'pattern', sequence });
+        applyVerifyResponse('pattern', res);
+      }, 250);
+    }
+  }
+  canvas.addEventListener('mousedown', start);
+  canvas.addEventListener('mousemove', move);
+  window.addEventListener('mouseup', end);
+  canvas.addEventListener('touchstart', e=>{e.preventDefault(); start(e);});
+  canvas.addEventListener('touchmove', e=>{e.preventDefault(); move(e);});
+  canvas.addEventListener('touchend', end);
+
+  document.getElementById('patternClearBtn').onclick = ()=>{
+    patternSeq=[]; patternDots.forEach(d=>d.classList.remove('on')); redraw();
+  };
+}
+function openPattern(){
+  buildPatternGrid();
+  document.getElementById('modalPattern').classList.add('active');
+}
+
+init();
+</script>
+
+<div id="pwa-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;
+  padding:14px 18px;background:rgba(10,12,15,.9);backdrop-filter:blur(20px);
+  border-top:1px solid rgba(59,157,255,.25);
+  align-items:center;gap:12px;font-family:'Inter',sans-serif;">
+  <img src="favicon.png" style="width:40px;height:40px;border-radius:10px;flex-shrink:0">
+  <div style="flex:1">
+    <div style="font-size:14px;font-weight:600;color:#f0f0f0">Install Vault</div>
+    <div style="font-size:12px;color:#8b95a5">Add to home screen for offline use</div>
+  </div>
+  <button id="pwa-install-btn" style="padding:9px 18px;border-radius:50px;border:none;
+    background:#3b9dff;color:#0a0c0f;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap">
+    Install
+  </button>
+  <button id="pwa-dismiss" style="background:none;border:none;color:#8b95a5;font-size:20px;
+    cursor:pointer;padding:4px 8px;line-height:1">×</button>
+</div>
+<script>
+let _deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e=>{
+  e.preventDefault(); _deferredPrompt = e;
+  const b = document.getElementById('pwa-banner'); if(b) b.style.display='flex';
+});
+document.addEventListener('DOMContentLoaded', ()=>{
+  const btn = document.getElementById('pwa-install-btn');
+  const dis = document.getElementById('pwa-dismiss');
+  const ban = document.getElementById('pwa-banner');
+  if(btn) btn.addEventListener('click', async()=>{
+    if(!_deferredPrompt) return;
+    _deferredPrompt.prompt();
+    await _deferredPrompt.userChoice;
+    _deferredPrompt = null;
+    if(ban) ban.style.display='none';
+  });
+  if(dis) dis.addEventListener('click', ()=>{ if(ban) ban.style.display='none'; });
+});
+window.addEventListener('appinstalled', ()=>{
+  const b = document.getElementById('pwa-banner'); if(b) b.style.display='none';
+  _deferredPrompt=null;
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{
+    "fail": {
+        "count": 0,
+        "lockUntil": 0
+    },
+    "pin": {
+        "salt": "076815c3742b339a0f494e0d",
+        "hash": "1e404ae9e44bac3166cb94375fe9c6e0462b7362402010e003d4b1582d23cb4f",
+        "enabled": true
+    },
+    "fingerprint": {
+        "credentialId": "s4NUt6TvNJBurrOt5Z69Ew",
+        "enabled": true
+    },
+    "voice": {
+        "phraseHash": "2348f998744212575d85959674f9607ab26f67708a917157472832386337c904",
+        "enabled": true
+    },
+    "pattern": {
+        "hash": "acea9ab8f66303812022293fb2b4427f841a53aea63f3256259da49248b03e5f",
+        "enabled": true
+    }
+}

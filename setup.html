@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Vault Setup</title>
+<link rel="apple-touch-icon" sizes="180x180" href="favicon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="rgba(0, 0, 0, 0)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-0:#0a0c0f;
+  --panel:linear-gradient(160deg,#2b2f37 0%,#181b20 70%,#101215 100%);
+  --panel-border:rgba(255,255,255,.07);
+  --accent:#3b9dff;
+  --accent-dim:rgba(59,157,255,.18);
+  --accent-line:rgba(59,157,255,.35);
+  --success:#2ee6a6;
+  --success-dim:rgba(46,230,166,.15);
+  --danger:#ff5468;
+  --danger-dim:rgba(255,84,104,.15);
+  --text:#eef2f7;
+  --text-dim:#8b95a5;
+  --text-faint:#565f6c;
+  --mono:'JetBrains Mono',monospace;
+  --display:'Space Grotesk',sans-serif;
+  --body:'Inter',sans-serif;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;min-height:100vh;display:flex;justify-content:center;align-items:center;
+  background:radial-gradient(circle at 30% 15%, rgba(59,157,255,.08), transparent 45%), var(--bg-0);
+  font-family:var(--body);color:var(--text);padding:20px;
+}
+.wizard{
+  width:360px;max-width:94vw;background:var(--panel);border:1px solid var(--panel-border);
+  border-radius:28px;box-shadow:inset 0 0 30px rgba(0,0,0,.55), 0 25px 60px rgba(0,0,0,.6);
+  padding:26px 22px;display:flex;flex-direction:column;align-items:center;gap:16px;
+}
+.progress{display:flex;gap:8px;margin-bottom:4px;}
+.pdotstep{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.15);transition:all .25s;}
+.pdotstep.active{background:var(--accent);width:22px;border-radius:4px;}
+.pdotstep.done{background:var(--success);}
+
+.step-icon{width:64px;height:64px;border-radius:50%;border:1.5px solid var(--accent-line);
+  display:flex;align-items:center;justify-content:center;color:var(--accent);}
+.step-icon svg{width:28px;height:28px;}
+.step-title{font-family:var(--display);font-weight:700;font-size:19px;letter-spacing:1px;text-align:center;}
+.step-desc{font-size:13px;color:var(--text-dim);text-align:center;line-height:1.5;}
+
+.row{display:flex;gap:10px;width:100%;}
+.btn{
+  flex:1;font-family:var(--body);font-size:13px;font-weight:600;padding:13px 10px;border-radius:100px;
+  border:1px solid var(--accent-line);cursor:pointer;color:var(--text);background:rgba(59,157,255,.08);
+  letter-spacing:.3px;
+}
+.btn.primary{background:var(--accent);color:#081018;border-color:var(--accent);}
+.btn.ghost{background:transparent;border-color:rgba(255,255,255,.12);color:var(--text-dim);}
+.btn:disabled{opacity:.4;cursor:not-allowed;}
+
+.status-line{font-size:12px;color:var(--text-dim);min-height:16px;text-align:center;}
+.status-line.err{color:var(--danger);}
+.status-line.ok{color:var(--success);}
+
+.pin-dots{display:flex;gap:10px;}
+.pin-dot{width:12px;height:12px;border-radius:50%;border:1.5px solid var(--accent-line);background:transparent;transition:all .2s;}
+.pin-dot.filled{background:var(--accent);border-color:var(--accent);}
+.keypad{display:grid;grid-template-columns:repeat(3,56px);gap:9px;}
+.key{width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.04);
+  border:1px solid var(--panel-border);color:var(--text);font-family:var(--mono);font-size:19px;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.key:active{background:var(--accent-dim);}
+.key.action{color:var(--accent);font-size:12px;font-family:var(--body);letter-spacing:.4px;}
+
+.face-video-wrap{width:200px;height:200px;border-radius:50%;overflow:hidden;border:3px solid var(--accent-line);position:relative;}
+.face-video-wrap video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1);}
+.scan-ring{position:absolute;inset:-3px;border-radius:50%;border:2px solid transparent;border-top-color:var(--accent);animation:spin 1.4s linear infinite;display:none;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.mic-orb{width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,var(--accent-dim),transparent 70%);
+  border:2px solid var(--accent-line);display:flex;align-items:center;justify-content:center;}
+.mic-orb.listening{animation:pulseMic 1s ease-in-out infinite;}
+@keyframes pulseMic{0%,100%{box-shadow:0 0 0 0 var(--accent-dim);}50%{box-shadow:0 0 0 14px transparent;}}
+.voice-transcript{font-size:12px;color:var(--text-dim);min-height:16px;text-align:center;font-family:var(--mono);}
+
+.pattern-grid{position:relative;width:200px;height:200px;}
+.pattern-grid canvas{position:absolute;inset:0;}
+.pdot{width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.08);border:2px solid var(--accent-line);position:absolute;}
+.pdot.on{background:var(--accent);box-shadow:0 0 10px var(--accent);}
+
+.summary{width:100%;display:flex;flex-direction:column;gap:8px;}
+.summary-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;
+  padding:10px 14px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid var(--panel-border);}
+.summary-row .tag{font-family:var(--mono);font-size:11px;padding:3px 9px;border-radius:20px;}
+.tag.on{background:var(--success-dim);color:var(--success);}
+.tag.off{background:rgba(255,255,255,.06);color:var(--text-faint);}
+</style>
+</head>
+<body>
+
+<div class="wizard">
+  <div class="progress" id="progress"></div>
+  <div id="stepArea">
+    <div class="step-desc">Checking vault status…</div>
+  </div>
+</div>
+
+<script src="vault-common.js"></script>
+<script>
+/* ===================== gate: is setup even allowed to show? ===================== */
+const cfg = { pin:null, fingerprint:null, face:null, voice:null, pattern:null };
+const STEPS = ["intro","pin","fingerprint","face","voice","pattern","summary"];
+let stepIndex = 0;
+
+async function boot(){
+  try{
+    const status = await VaultApi.get('setup_status');
+    if(!status.allowed){
+      renderBlocked();
+      return;
+    }
+    render();
+  }catch(e){
+    document.getElementById('progress').innerHTML='';
+    document.getElementById('stepArea').innerHTML =
+      `<div class="step-title">CAN'T REACH SERVER</div><div class="step-desc">${e.message}</div>`;
+  }
+}
+
+function renderBlocked(){
+  document.getElementById('progress').innerHTML='';
+  const area=document.getElementById('stepArea');
+  area.innerHTML=`
+    <div class="step-icon">${iconTpl('shield')}</div>
+    <div class="step-title">VAULT ALREADY SET UP</div>
+    <div class="step-desc">This vault is already configured. To change its lock methods, unlock it first,
+    then open <b>reconfigure.html</b> within a few minutes.</div>
+    <div class="row"><button class="btn primary" id="toLock">Go to Lock Screen</button></div>
+  `;
+  document.getElementById('toLock').onclick=()=>window.location.href="index.html";
+}
+
+/* ===================== step machine ===================== */
+function renderProgress(){
+  const p=document.getElementById('progress');
+  p.innerHTML='';
+  STEPS.forEach((s,i)=>{
+    const d=document.createElement('div');
+    d.className='pdotstep'+(i===stepIndex?' active':i<stepIndex?' done':'');
+    p.appendChild(d);
+  });
+}
+function next(){ stepIndex=Math.min(stepIndex+1, STEPS.length-1); render(); }
+
+function render(){
+  renderProgress();
+  const area=document.getElementById('stepArea');
+  const step=STEPS[stepIndex];
+  area.innerHTML='';
+  if(step==='intro') renderIntro(area);
+  else if(step==='pin') renderPinStep(area);
+  else if(step==='fingerprint') renderFingerprintStep(area);
+  else if(step==='face') renderFaceStep(area);
+  else if(step==='voice') renderVoiceStep(area);
+  else if(step==='pattern') renderPatternStep(area);
+  else if(step==='summary') renderSummary(area);
+}
+
+function iconTpl(name){
+  const icons={
+    pin:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="3"/><circle cx="8" cy="10" r="1"/><circle cx="12" cy="10" r="1"/><circle cx="16" cy="10" r="1"/><circle cx="8" cy="14" r="1"/><circle cx="12" cy="14" r="1"/><circle cx="16" cy="14" r="1"/></svg>`,
+    fingerprint:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3a7 7 0 0 0-7 7v2a13 13 0 0 0 3 8"/><path d="M12 3a7 7 0 0 1 7 7v2c0 1.8-.3 3.4-.8 5"/><path d="M8 10a4 4 0 0 1 8 0v2c0 3-1 6-2.5 8"/><path d="M12 10v3c0 2.5-.6 4.8-1.6 6.7"/></svg>`,
+    face:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="9" cy="10" r="1"/><circle cx="15" cy="10" r="1"/><path d="M9 15c1 1 5 1 6 0"/></svg>`,
+    voice:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Z"/><path d="M19 11a7 7 0 0 1-14 0"/><path d="M12 18v3"/></svg>`,
+    pattern:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="6" r="1.4"/><circle cx="12" cy="6" r="1.4"/><circle cx="18" cy="6" r="1.4"/><circle cx="6" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18" cy="12" r="1.4"/><circle cx="6" cy="18" r="1.4"/><circle cx="12" cy="18" r="1.4"/><circle cx="18" cy="18" r="1.4"/><path d="M6 6 12 12 18 18"/></svg>`,
+    shield:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3Z"/></svg>`
+  };
+  return icons[name]||'';
+}
+
+/* ===================== INTRO ===================== */
+function renderIntro(area){
+  area.innerHTML=`
+    <div class="step-icon">${iconTpl('shield')}</div>
+    <div class="step-title">SET UP VAULT</div>
+    <div class="step-desc">You'll configure five verification methods: PIN, fingerprint, face, voice and pattern.
+    To unlock the vault later, at least <b>3 of 5</b> must pass in a single attempt — so set up at least three.
+    Once finished, this setup page locks itself — you'll need to unlock the vault to change methods later.</div>
+    <div class="row"><button class="btn primary" id="startBtn">Begin Setup</button></div>
+  `;
+  document.getElementById('startBtn').onclick=next;
+}
+
+/* ===================== PIN ===================== */
+let pinFirstEntry=null, pinBuffer=[];
+function renderPinStep(area){
+  pinFirstEntry=null; pinBuffer=[];
+  area.innerHTML=`
+    <div class="step-icon">${iconTpl('pin')}</div>
+    <div class="step-title">SET PIN</div>
+    <div class="step-desc" id="pinDesc">Enter a PIN of 4–8 digits</div>
+    <div class="pin-dots" id="pinDots"></div>
+    <div class="keypad" id="pinKeypad"></div>
+    <div class="status-line" id="pinStatus"></div>
+    <div class="row">
+      <button class="btn ghost" id="pinSkip">Skip</button>
+      <button class="btn primary" id="pinContinue" style="display:none;">Continue</button>
+    </div>
+  `;
+  buildKeypad();
+  renderPinDots();
+  document.getElementById('pinSkip').onclick=()=>{ cfg.pin=null; next(); };
+  document.getElementById('pinContinue').onclick=next;
+}
+function buildKeypad(){
+  const kp=document.getElementById('pinKeypad');
+  kp.innerHTML='';
+  const keys=['1','2','3','4','5','6','7','8','9','clear','0','ok'];
+  keys.forEach(k=>{
+    const el=document.createElement('div');
+    if(k==='clear'){ el.className='key action'; el.textContent='CLR'; el.onclick=()=>{pinBuffer=[];renderPinDots();}; }
+    else if(k==='ok'){ el.className='key action'; el.textContent='OK'; el.onclick=submitPinEntry; }
+    else { el.className='key'; el.textContent=k; el.onclick=()=>{ if(pinBuffer.length<8){ pinBuffer.push(k); renderPinDots(); } }; }
+    kp.appendChild(el);
+  });
+}
+function renderPinDots(){
+  const d=document.getElementById('pinDots'); d.innerHTML='';
+  const count=Math.max(pinBuffer.length,4);
+  for(let i=0;i<count;i++){
+    const dot=document.createElement('div');
+    dot.className='pin-dot'+(i<pinBuffer.length?' filled':'');
+    d.appendChild(dot);
+  }
+}
+function submitPinEntry(){
+  const status=document.getElementById('pinStatus');
+  if(pinBuffer.length<4){ status.textContent="PIN must be at least 4 digits"; status.className="status-line err"; return; }
+  if(pinFirstEntry===null){
+    pinFirstEntry = pinBuffer.join('');
+    pinBuffer=[];
+    renderPinDots();
+    document.getElementById('pinDesc').textContent="Re-enter your PIN to confirm";
+    status.textContent="";
+    return;
+  }
+  const second=pinBuffer.join('');
+  if(second!==pinFirstEntry){
+    status.textContent="PINs didn't match — try again"; status.className="status-line err";
+    pinFirstEntry=null; pinBuffer=[]; renderPinDots();
+    document.getElementById('pinDesc').textContent="Enter a PIN of 4–8 digits";
+    return;
+  }
+  cfg.pin = { value: second };
+  status.textContent="PIN saved"; status.className="status-line ok";
+  document.getElementById('pinContinue').style.display='inline-block';
+  setTimeout(next, 500);
+}
+
+/* ===================== FINGERPRINT ===================== */
+function renderFingerprintStep(area){
+  area.innerHTML=`
+    <div class="step-icon">${iconTpl('fingerprint')}</div>
+    <div class="step-title">FINGERPRINT</div>
+    <div class="step-desc">Uses your device's built-in biometric sensor via WebAuthn. Requires a fingerprint or face
+    unlock already set up on this device, and a secure (HTTPS or localhost) connection.</div>
+    <div class="status-line" id="fpStatus">${webauthnSupported() ? "" : "Not supported on this browser/device"}</div>
+    <div class="row">
+      <button class="btn ghost" id="fpSkip">Skip</button>
+      <button class="btn primary" id="fpRegister" ${webauthnSupported()?'':'disabled'}>Register</button>
+    </div>
+  `;
+  document.getElementById('fpSkip').onclick=()=>{ cfg.fingerprint=null; next(); };
+  document.getElementById('fpRegister').onclick=async ()=>{
+    const status=document.getElementById('fpStatus');
+    status.textContent="Follow your device's biometric prompt…"; status.className="status-line";
+    try{
+      const credentialId = await registerFingerprintCredential();
+      cfg.fingerprint = { credentialId };
+      status.textContent="Fingerprint registered"; status.className="status-line ok";
+      setTimeout(next, 600);
+    }catch(e){
+      status.textContent="Registration failed or cancelled"; status.className="status-line err";
+    }
+  };
+}
+
+/* ===================== FACE ===================== */
+let faceStream=null;
+function renderFaceStep(area){
+  area.innerHTML=`
+    <div class="step-title">FACE LOCK</div>
+    <div class="step-desc">Look at the camera and capture your face. This is a best-effort match, not
+    high-security biometrics — pair it with other methods.</div>
+    <div class="face-video-wrap"><div class="scan-ring" id="faceScanRing"></div><video id="faceVideo" autoplay playsinline muted></video></div>
+    <div class="status-line" id="faceStatus">Loading camera…</div>
+    <div class="row">
+      <button class="btn ghost" id="faceSkip">Skip</button>
+      <button class="btn primary" id="faceCapture">Capture</button>
+    </div>
+  `;
+  document.getElementById('faceSkip').onclick=()=>{ stopFaceStream(); cfg.face=null; next(); };
+  initFaceCamera();
+  document.getElementById('faceCapture').onclick=captureFace;
+}
+async function initFaceCamera(){
+  const status=document.getElementById('faceStatus');
+  try{
+    faceStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}});
+    document.getElementById('faceVideo').srcObject = faceStream;
+    await loadFaceApi();
+    status.textContent="Center your face and tap Capture";
+  }catch(e){
+    status.textContent="Camera or model unavailable: "+(e.message||"error");
+  }
+}
+async function captureFace(){
+  const status=document.getElementById('faceStatus');
+  const ring=document.getElementById('faceScanRing');
+  ring.style.display='block';
+  status.textContent="Scanning…";
+  try{
+    const descriptor = await detectFaceDescriptor(document.getElementById('faceVideo'));
+    ring.style.display='none';
+    if(!descriptor){ status.textContent="No face detected — try again"; status.className="status-line err"; return; }
+    cfg.face = { descriptor };
+    status.textContent="Face captured"; status.className="status-line ok";
+    stopFaceStream();
+    setTimeout(next, 500);
+  }catch(e){
+    ring.style.display='none';
+    status.textContent="Capture failed — try again"; status.className="status-line err";
+  }
+}
+function stopFaceStream(){ if(faceStream){ faceStream.getTracks().forEach(t=>t.stop()); faceStream=null; } }
+
+/* ===================== VOICE ===================== */
+let voiceFirstPhrase=null;
+function renderVoiceStep(area){
+  voiceFirstPhrase=null;
+  area.innerHTML=`
+    <div class="step-icon">${iconTpl('voice')}</div>
+    <div class="step-title">VOICE PASSPHRASE</div>
+    <div class="step-desc" id="voiceDesc">Speak a short passphrase you'll remember (e.g. a made-up phrase, not a real password).</div>
+    <div class="mic-orb" id="micOrb">${iconTpl('voice')}</div>
+    <div class="voice-transcript" id="voiceTranscript"></div>
+    <div class="status-line" id="voiceStatus"></div>
+    <div class="row">
+      <button class="btn ghost" id="voiceSkip">Skip</button>
+      <button class="btn primary" id="voiceListen">Start Listening</button>
+      <button class="btn primary" id="voiceContinue" style="display:none;">Continue</button>
+    </div>
+  `;
+  document.getElementById('voiceSkip').onclick=()=>{ cfg.voice=null; next(); };
+  document.getElementById('voiceContinue').onclick=next;
+  document.getElementById('voiceListen').onclick=startVoiceListen;
+}
+function startVoiceListen(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const orb=document.getElementById('micOrb'), t=document.getElementById('voiceTranscript'), status=document.getElementById('voiceStatus');
+  if(!SR){ status.textContent="Speech recognition not supported"; status.className="status-line err"; return; }
+  const recognition=new SR();
+  recognition.lang='en-US'; recognition.interimResults=false; recognition.maxAlternatives=1;
+  orb.classList.add('listening'); t.textContent="Listening…"; status.textContent="";
+  recognition.onresult = (ev)=>{
+    const transcript = normalizePhrase(ev.results[0][0].transcript);
+    orb.classList.remove('listening');
+    t.textContent = transcript || "(nothing heard)";
+    if(!transcript){ status.textContent="Didn't catch that — try again"; status.className="status-line err"; return; }
+    if(voiceFirstPhrase===null){
+      voiceFirstPhrase = transcript;
+      document.getElementById('voiceDesc').textContent = "Say the same phrase again to confirm";
+      status.textContent="Phrase captured — repeat it";
+      status.className="status-line";
+      return;
+    }
+    if(transcript !== voiceFirstPhrase){
+      status.textContent="Phrases didn't match — starting over"; status.className="status-line err";
+      voiceFirstPhrase=null;
+      document.getElementById('voiceDesc').textContent="Speak a short passphrase you'll remember";
+      return;
+    }
+    cfg.voice = { phrase: transcript };
+    status.textContent="Voice passphrase saved"; status.className="status-line ok";
+    document.getElementById('voiceContinue').style.display='inline-block';
+    setTimeout(next, 600);
+  };
+  recognition.onerror = ()=>{
+    orb.classList.remove('listening');
+    status.textContent="Microphone error — try again"; status.className="status-line err";
+  };
+  recognition.onend = ()=>orb.classList.remove('listening');
+  recognition.start();
+}
+
+/* ===================== PATTERN ===================== */
+let patternFirst=null, patternSeq=[], patternDots=[];
+function renderPatternStep(area){
+  patternFirst=null; patternSeq=[];
+  area.innerHTML=`
+    <div class="step-icon">${iconTpl('pattern')}</div>
+    <div class="step-title">DRAW PATTERN</div>
+    <div class="step-desc" id="patternDesc">Connect at least 3 dots to create your unlock pattern</div>
+    <div class="pattern-grid" id="patternGrid"></div>
+    <div class="status-line" id="patternStatus"></div>
+    <div class="row">
+      <button class="btn ghost" id="patternSkip">Skip</button>
+      <button class="btn ghost" id="patternClear">Clear</button>
+      <button class="btn primary" id="patternContinue" style="display:none;">Continue</button>
+    </div>
+  `;
+  document.getElementById('patternSkip').onclick=()=>{ cfg.pattern=null; next(); };
+  document.getElementById('patternContinue').onclick=next;
+  buildPatternGrid();
+}
+function buildPatternGrid(){
+  const grid=document.getElementById('patternGrid');
+  grid.innerHTML=''; patternDots=[];
+  const positions=[];
+  for(let r=0;r<3;r++) for(let c=0;c<3;c++) positions.push({r,c,idx:r*3+c});
+  positions.forEach(p=>{
+    const dot=document.createElement('div');
+    dot.className='pdot';
+    dot.style.left=(16+p.c*80)+'px';
+    dot.style.top=(16+p.r*80)+'px';
+    dot.dataset.idx=p.idx;
+    grid.appendChild(dot);
+    patternDots.push(dot);
+  });
+  const canvas=document.createElement('canvas');
+  canvas.width=200; canvas.height=200;
+  grid.appendChild(canvas);
+  const ctx=canvas.getContext('2d');
+  let drawing=false;
+
+  function dotCenter(d){ return {x:parseInt(d.style.left)+8, y:parseInt(d.style.top)+8}; }
+  function redraw(mx,my){
+    ctx.clearRect(0,0,200,200);
+    ctx.strokeStyle='#3b9dff'; ctx.lineWidth=3; ctx.lineCap='round';
+    ctx.beginPath();
+    patternSeq.forEach((idx,i)=>{
+      const c=dotCenter(patternDots[idx]);
+      if(i===0) ctx.moveTo(c.x,c.y); else ctx.lineTo(c.x,c.y);
+    });
+    if(mx!==undefined && patternSeq.length) ctx.lineTo(mx,my);
+    ctx.stroke();
+  }
+  function hitTest(x,y){
+    for(const d of patternDots){ const c=dotCenter(d); if(Math.hypot(c.x-x,c.y-y)<18) return d; }
+    return null;
+  }
+  function pos(e){ const rect=canvas.getBoundingClientRect(); const t=e.touches?e.touches[0]:e; return {x:t.clientX-rect.left,y:t.clientY-rect.top}; }
+  function start(e){
+    drawing=true; patternSeq=[]; patternDots.forEach(d=>d.classList.remove('on'));
+    const p=pos(e); const hit=hitTest(p.x,p.y);
+    if(hit){ patternSeq.push(+hit.dataset.idx); hit.classList.add('on'); }
+    redraw();
+  }
+  function move(e){
+    if(!drawing) return;
+    const p=pos(e); const hit=hitTest(p.x,p.y);
+    if(hit && !patternSeq.includes(+hit.dataset.idx)){ patternSeq.push(+hit.dataset.idx); hit.classList.add('on'); }
+    redraw(p.x,p.y);
+  }
+  function end(){
+    if(!drawing) return;
+    drawing=false; redraw();
+    const status=document.getElementById('patternStatus');
+    if(patternSeq.length<3){ status.textContent="Use at least 3 dots"; status.className="status-line err"; return; }
+    if(patternFirst===null){
+      patternFirst = patternSeq.slice();
+      document.getElementById('patternDesc').textContent="Draw the same pattern again to confirm";
+      status.textContent="Pattern captured — repeat it"; status.className="status-line";
+      setTimeout(()=>{ patternSeq=[]; patternDots.forEach(d=>d.classList.remove('on')); redraw(); }, 500);
+      return;
+    }
+    const matches = patternFirst.length===patternSeq.length && patternFirst.every((v,i)=>v===patternSeq[i]);
+    if(!matches){
+      status.textContent="Patterns didn't match — starting over"; status.className="status-line err";
+      patternFirst=null;
+      document.getElementById('patternDesc').textContent="Connect at least 3 dots to create your unlock pattern";
+      setTimeout(()=>{ patternSeq=[]; patternDots.forEach(d=>d.classList.remove('on')); redraw(); }, 600);
+      return;
+    }
+    cfg.pattern = { sequence: patternSeq.join('-') };
+    status.textContent="Pattern saved"; status.className="status-line ok";
+    document.getElementById('patternContinue').style.display='inline-block';
+    setTimeout(next, 600);
+  }
+  canvas.addEventListener('mousedown', start);
+  canvas.addEventListener('mousemove', move);
+  window.addEventListener('mouseup', end);
+  canvas.addEventListener('touchstart', e=>{e.preventDefault(); start(e);});
+  canvas.addEventListener('touchmove', e=>{e.preventDefault(); move(e);});
+  canvas.addEventListener('touchend', end);
+  document.getElementById('patternClear').onclick=()=>{ patternSeq=[]; patternDots.forEach(d=>d.classList.remove('on')); redraw(); };
+}
+
+/* ===================== SUMMARY ===================== */
+function renderSummary(area){
+  const methods=[
+    {key:'pin', label:'PIN'},
+    {key:'fingerprint', label:'Fingerprint'},
+    {key:'face', label:'Face'},
+    {key:'voice', label:'Voice'},
+    {key:'pattern', label:'Pattern'}
+  ];
+  const enabledCount = methods.filter(m=>cfg[m.key]).length;
+  area.innerHTML=`
+    <div class="step-icon">${iconTpl('shield')}</div>
+    <div class="step-title">REVIEW</div>
+    <div class="summary" id="summaryList"></div>
+    <div class="status-line" id="summaryStatus"></div>
+    <div class="row">
+      <button class="btn ghost" id="summaryRestart">Redo a method</button>
+      <button class="btn primary" id="summaryFinish" ${enabledCount<3?'disabled':''}>Finish</button>
+    </div>
+  `;
+  const list=document.getElementById('summaryList');
+  methods.forEach(m=>{
+    const row=document.createElement('div');
+    row.className='summary-row';
+    row.innerHTML=`<span>${m.label}</span><span class="tag ${cfg[m.key]?'on':'off'}">${cfg[m.key]?'ENABLED':'NOT SET'}</span>`;
+    list.appendChild(row);
+  });
+  const status=document.getElementById('summaryStatus');
+  if(enabledCount<3){
+    status.textContent = `Set up at least 3 methods to finish (currently ${enabledCount})`;
+    status.className="status-line err";
+  } else {
+    status.textContent = `${enabledCount} of 5 methods configured — 3 must pass to unlock`;
+    status.className="status-line ok";
+  }
+  document.getElementById('summaryRestart').onclick=()=>{ stepIndex=1; render(); };
+  document.getElementById('summaryFinish').onclick=async ()=>{
+    if(enabledCount<3) return;
+    status.textContent = "Saving…"; status.className="status-line";
+    try{
+      const res = await VaultApi.post('save', cfg);
+      if(res.ok){
+        window.location.href="index.html";
+      } else {
+        status.textContent = res.error || "Save failed — try again";
+        status.className="status-line err";
+      }
+    }catch(e){
+      status.textContent = e.message || "Save failed — could not reach the server";
+      status.className="status-line err";
+    }
+  };
+}
+
+boot();
+</script>
+</body>
+</html>

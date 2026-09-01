@@ -1,0 +1,284 @@
+Create a premium iOS 26-inspired Glassmorphism Contacts & Dialer application with Apple-level UI polish, fluid animations, realistic depth, dynamic lighting, and production-ready mobile UX.
+
+DESIGN LANGUAGE
+- Authentic Liquid Glass design system
+- Frosted translucent glass panels
+- Dynamic blur backgrounds
+- Adaptive light and dark mode
+- Layered depth effects
+- Smooth spring animations
+- Rounded corners (28px–36px)
+- Premium shadows and reflections
+- Floating navigation elements
+- Modern SF Pro typography
+- Native iOS interaction patterns
+- Edge-to-edge layout
+- Haptic feedback interactions
+- Smooth transitions between screens
+
+COLOR SYSTEM
+- Crystal white glass
+- Dynamic tint colors
+- Blue accent for primary actions
+- Adaptive gradients
+- Transparent overlays
+- Dynamic wallpaper integration
+- Vibrant blur effects
+
+APP STRUCTURE
+
+BOTTOM TAB BAR
+- Favorites
+- Recents
+- Contacts
+- Keypad
+- Voicemail
+
+HOME CONTACTS SCREEN
+
+Header
+- Search contacts
+- Voice search
+- Profile avatar
+- Add contact button
+
+Contact List
+- Alphabetical sections
+- Contact avatars
+- Favorite indicators
+- Presence status
+- Smart suggestions
+- Frequent contacts
+- Pinned contacts
+
+Features
+- Pull to refresh
+- Swipe actions
+- Quick call
+- Smart contact grouping
+- Contact merge suggestions
+
+ADVANCED SEARCH
+- Search by name
+- Search by phone number
+- Search by address
+- AI-powered search suggestions
+
+CONTACT PROFILE SCREEN
+
+Hero Contact Card
+- Large circular avatar
+- Full contact name
+- Status indicator
+- Dynamic glass card
+
+Quick Actions
+- Call
+- Share Contact
+
+Detailed Information
+- Multiple phone numbers
+- Addresses
+- Social profiles
+
+Advanced Features
+- Contact history
+- Communication timeline
+- Shared media
+- call history or logd
+- Recent interactions
+- Contact tags
+- Custom labels
+
+DIALER SCREEN
+
+Premium Glass Keypad
+- Floating glass keypad
+- Dynamic button animations
+- Large touch targets
+- Number formatting
+- Smart suggestions
+
+Dial Features
+- T9 search
+- Smart dialing
+- International dialing
+- Speed dial
+- Pause and wait insertion
+- Copy number
+- Paste number
+
+Call Button
+- Floating green glass button
+- Animated press effects
+- Haptic feedback
+
+RECENTS SCREEN
+
+Call History
+- Incoming calls
+- Outgoing calls
+- Missed calls
+- Blocked calls
+- Voicemail history
+
+Filters
+- All calls
+- Missed calls
+- Spam calls
+- Favorites
+
+Actions
+- Redial
+- Call back
+- Message
+- Add contact
+- Block number
+
+CALLER ID EXPERIENCE
+
+Incoming Call Screen
+
+Dynamic Caller Card
+- Large contact photo
+- Glassmorphism floating card
+- Caller name
+- Phone number
+- Location information
+- Verification badge
+- Spam risk indicator
+
+Call Controls
+- Accept call
+- Decline call
+- Remind me later
+- Call screening
+
+Animations
+- Fluid card entrance
+- Dynamic background blur
+- Interactive gestures
+- Smooth transitions
+
+Live Caller Intelligence
+- Caller reputation
+- Spam detection
+- Contact relationship
+- Previous interactions
+
+ACTIVE CALL SCREEN
+
+Premium Call Interface
+- Full-screen glass layout
+- Dynamic waveform visualization
+- Call duration timer
+- HD call indicator
+
+Call Controls
+- Mute
+- Speaker
+- Keypad
+- Hold
+- Add call
+- save contact
+- Record call
+- edit contact
+- Transfer call
+
+Advanced Features
+- Real-time translation
+- AI call summaries
+- Noise cancellation
+- Voice enhancement
+
+VOICEMAIL SECTION
+
+Visual Voicemail
+- Audio waveform
+- Playback controls
+- Speaker mode
+- Save recording
+
+SMART FEATURES
+
+AI Assistant
+- Contact suggestions
+- Smart dialing
+- Call recommendations
+- Meeting detection
+- Relationship insights
+
+Spam Protection
+- Real-time spam detection
+- Scam warnings
+- Business verification
+- Fraud prevention
+
+Emergency Features
+- help contacts
+- Location sharing
+
+SETTINGS
+
+Appearance
+- Light mode
+- Dark mode
+- Dynamic mode
+- Custom accent colors
+
+Privacy
+- Caller ID controls
+- Contact permissions
+- Call history controls
+- Data management
+
+Accessibility
+- Voice control
+- Large text
+- High contrast
+- Screen reader support
+
+MICRO-INTERACTIONS
+
+- Liquid glass ripple effects
+- Dynamic button morphing
+- Floating card transitions
+- Realistic depth movement
+- Gesture-driven animations
+- Spring-based interactions
+- Native iOS feel
+- 120fps smooth animations
+
+OUTPUT REQUIREMENTS
+
+Design a complete production-ready iOS Contacts & Dialer application featuring:
+- Every screen fully designed
+- Complete caller ID experience
+- Complete contact management system
+- Complete dialer functionality
+- Visual voicemail
+- Glassmorphism UI throughout
+- Apple-quality design standards
+- Responsive layouts
+- Pixel-perfect spacing
+- Modern 2026 mobile design trends
+- High-fidelity interactive prototype quality
+- Complete SETTINGS page
+- Complete ringing tone setup from users device
+- make it  a real full offline accessible (can see saved contacts ,call history and already played voicemail.) use PHP to make it real and make it work with no errors or server side problems.
+Basic sign up 
+- only two inputs required additional one for password creation.
+ user will first create a password then it automaticaly generates 11 digits number for the user ,then the user   copy that number generated and use it to login to the two required inputs(copied number and the password created).
+
+account comletion
+After they've successfuly loged in they have to go to the the settings page ,they have to see complete account modal to finish their account setup(1.add username
+2.add profile picture
+3.add location
+4.add bio)
+.Note this modal appears to only users who are not done or haven't completed their account yet.
+make users only search or dail number before they can contact someone unknown or someone they havn't called before.don't all users to any one.
+users picks their own ringing tone from their device but uses default ringing tone when not set yet.REMEMBER ITS JUST FOR CALL.SECURE ALL CODES FROM HACKERS  ATTACK.DON'T MAKE IT COMPLICATED.
+ NOTE THIS:I actually hate that kinda apatche stuffs.
+  I don't use SQLITE I use MySQL or Mariadbd will my SQLITE work for me cos I'm using termux.
+  I don't use password for my database.
+  

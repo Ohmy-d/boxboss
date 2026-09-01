@@ -1,0 +1,53 @@
+{
+    "74.244.119.158": {
+        "data": {
+            "status": "success",
+            "country": "Ghana",
+            "regionName": "Greater Accra Region",
+            "city": "Accra",
+            "lat": 5.6037,
+            "lon": -0.1869,
+            "isp": "Space Exploration Technologies Corporation",
+            "org": "SpaceX Starlink",
+            "as": "AS14593 Space Exploration Technologies Corporation",
+            "mobile": true,
+            "proxy": false,
+            "hosting": false
+        },
+        "_ts": 1784201816
+    },
+    "66.249.93.196": {
+        "data": {
+            "status": "success",
+            "country": "Belgium",
+            "regionName": "Brussels Capital",
+            "city": "Brussels",
+            "lat": 50.8477,
+            "lon": 4.3572,
+            "isp": "Google LLC",
+            "org": "Google LLC",
+            "as": "AS15169 Google LLC",
+            "mobile": false,
+            "proxy": true,
+            "hosting": true
+        },
+        "_ts": 1784201821
+    },
+    "154.161.161.214": {
+        "data": {
+            "status": "success",
+            "country": "Ghana",
+            "regionName": "Greater Accra Region",
+            "city": "Accra",
+            "lat": 5.5545,
+            "lon": -0.1902,
+            "isp": "Scancom [MTNGhana] Mobile Subscribers",
+            "org": "Scancom Limited",
+            "as": "AS30986 Scancom Limited",
+            "mobile": true,
+            "proxy": false,
+            "hosting": false
+        },
+        "_ts": 1784217818
+    }
+}
