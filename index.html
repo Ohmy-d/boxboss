@@ -438,6 +438,52 @@ const TIERS={
   overallMaster:{name:'THE OVERALL MASTER',roundTime:14,lenMin:8,lenMax:9,spinBase:0.049,wrongPenalty:2.2,mult:5.0,color:'#fff700',cubeDur:0.3 },
 };
 
+/* Each tier is split into 3 numbered sub-levels so difficulty ramps in small
+   steps instead of one big jump at every tier threshold. Level 3 of each
+   tier always matches that tier's own values above exactly (so the overall
+   balance at full tier is unchanged) — levels 1-2 ease into it gradually,
+   starting from roughly where the previous tier left off. */
+const SUBLEVELS={
+  beginner:[
+    {scoreMin:0,  scoreMax:39, roundTime:28,lenMin:3,lenMax:3,spinBase:0.008,wrongPenalty:0.8,mult:1.0,cubeDur:4.0},
+    {scoreMin:40, scoreMax:79, roundTime:26,lenMin:3,lenMax:4,spinBase:0.009,wrongPenalty:0.9,mult:1.0,cubeDur:4.0},
+    {scoreMin:80, scoreMax:119,roundTime:25,lenMin:3,lenMax:4,spinBase:0.010,wrongPenalty:1.0,mult:1.0,cubeDur:4.0},
+  ],
+  middle:[
+    {scoreMin:120,scoreMax:196,roundTime:23,lenMin:4,lenMax:4,spinBase:0.013,wrongPenalty:1.1,mult:1.2,cubeDur:2.4},
+    {scoreMin:197,scoreMax:273,roundTime:21,lenMin:4,lenMax:5,spinBase:0.016,wrongPenalty:1.3,mult:1.3,cubeDur:2.4},
+    {scoreMin:274,scoreMax:349,roundTime:20,lenMin:4,lenMax:5,spinBase:0.020,wrongPenalty:1.5,mult:1.4,cubeDur:2.4},
+  ],
+  pro:[
+    {scoreMin:350,scoreMax:466,roundTime:20,lenMin:4,lenMax:5,spinBase:0.024,wrongPenalty:1.4,mult:1.5, cubeDur:1.1},
+    {scoreMin:467,scoreMax:583,roundTime:19,lenMin:5,lenMax:5,spinBase:0.029,wrongPenalty:1.2,mult:1.65,cubeDur:1.1},
+    {scoreMin:584,scoreMax:699,roundTime:19,lenMin:5,lenMax:6,spinBase:0.034,wrongPenalty:1.0,mult:1.8, cubeDur:1.1},
+  ],
+  masterPro:[
+    {scoreMin:700, scoreMax:866, roundTime:19,lenMin:5,lenMax:6,spinBase:0.037,wrongPenalty:1.15,mult:2.1,cubeDur:0.75},
+    {scoreMin:867, scoreMax:1033,roundTime:18,lenMin:6,lenMax:6,spinBase:0.040,wrongPenalty:1.3, mult:2.3,cubeDur:0.75},
+    {scoreMin:1034,scoreMax:1199,roundTime:17,lenMin:6,lenMax:7,spinBase:0.042,wrongPenalty:1.5, mult:2.5,cubeDur:0.75},
+  ],
+  legendDemon:[
+    {scoreMin:1200,scoreMax:1466,roundTime:17,lenMin:6,lenMax:7,spinBase:0.048,wrongPenalty:1.35,mult:2.8, cubeDur:0.5},
+    {scoreMin:1467,scoreMax:1733,roundTime:16,lenMin:7,lenMax:7,spinBase:0.056,wrongPenalty:1.15,mult:3.15,cubeDur:0.5},
+    {scoreMin:1734,scoreMax:1999,roundTime:16,lenMin:7,lenMax:8,spinBase:0.064,wrongPenalty:1.0, mult:3.5, cubeDur:0.5},
+  ],
+  overallMaster:[
+    {scoreMin:2000,scoreMax:2399,   roundTime:15,lenMin:7,lenMax:8,spinBase:0.058,wrongPenalty:1.5, mult:4.0,cubeDur:0.3},
+    {scoreMin:2400,scoreMax:2799,   roundTime:14,lenMin:8,lenMax:8,spinBase:0.053,wrongPenalty:1.85,mult:4.5,cubeDur:0.3},
+    {scoreMin:2800,scoreMax:Infinity,roundTime:14,lenMin:8,lenMax:9,spinBase:0.049,wrongPenalty:2.2,mult:5.0,cubeDur:0.3},
+  ],
+};
+function currentSubLevelParams(){
+  const key=currentTierKey(),levels=SUBLEVELS[key],base=TIERS[key];
+  let lvl=levels[levels.length-1],num=levels.length;
+  for(let i=0;i<levels.length;i++){
+    if(score>=levels[i].scoreMin&&score<=levels[i].scoreMax){lvl=levels[i];num=i+1;break;}
+  }
+  return Object.assign({},lvl,{name:base.name+' \u00b7 LEVEL '+num,color:base.color,tierName:base.name,subLevel:num});
+}
+
 const THEMES={
   green:{
     clearColor:0x000000,clearAlpha:0,
@@ -518,7 +564,7 @@ let score=0,highScore=0,lives=3;
 let targetSequence=[],foundIndex=0;
 let timeLeft=0,roundTime=25,roundStartTs=0;
 let gameRunning=false,paused=false,menuOpen=false,pauseAllowed=true;
-let prevTier='beginner';
+let prevTier='beginner';let prevSubLevel=1;
 let soundOn=true,musicOn=true,vibrationOn=true,wireframeOn=false,currentTheme='green';
 let proUnlocked=false,proStartMode=false,proFailsInMode=0,proRoundsCompleted=0;
 
@@ -656,7 +702,7 @@ function currentTierKey(){
   if(score>=700)return'masterPro';if(score>=350)return'pro';
   if(score>=120)return'middle';return'beginner';
 }
-function tierParams(){return TIERS[currentTierKey()];}
+function tierParams(){return currentSubLevelParams();}
 function randomLen(){const p=tierParams();return p.lenMin+Math.floor(Math.random()*(p.lenMax-p.lenMin+1));}
 function computeSpin(){const p=tierParams();return p.spinBase+Math.min(0.04,score*0.000018);}
 
@@ -781,10 +827,12 @@ function drawCell(fi,row,col){
 }
 function drawFace(fi){for(let r=0;r<GRID;r++)for(let c=0;c<GRID;c++)drawCell(fi,r,c);}
 function flashCell(fi,row,col,color,revertDigit){
+  if(revertDigit!==undefined)gridData[fi][row][col]=revertDigit; /* update data first — never leave a stale digit tappable during the flash */
+  drawCell(fi,row,col);
   const ctx=faceCtx[fi],x=col*CELL,y=row*CELL;
   ctx.fillStyle=color;ctx.globalAlpha=0.55;ctx.fillRect(x+3,y+3,CELL-6,CELL-6);ctx.globalAlpha=1;
   faceTextures[fi].needsUpdate=true;
-  setTimeout(()=>{if(revertDigit!==undefined)gridData[fi][row][col]=revertDigit;drawCell(fi,row,col);},240);
+  setTimeout(()=>{drawCell(fi,row,col);},240);
 }
 function regenerateGrid(){
   SIDE_FACES.forEach(f=>{for(let r=0;r<GRID;r++)for(let c=0;c<GRID;c++)gridData[f][r][c]=Math.floor(Math.random()*10);});
@@ -1101,8 +1149,12 @@ function startRound(isFirst){
   sendGridUpdate();
 }
 function maybeLevelUp(){
-  const t=currentTierKey();
-  if(t!==prevTier){showBanner('LEVEL UP: '+TIERS[t].name,1600);playSound('round');prevTier=t;}
+  const t=currentTierKey(),sub=currentSubLevelParams().subLevel;
+  if(t!==prevTier){
+    showBanner('LEVEL UP: '+TIERS[t].name,1600);playSound('round');prevTier=t;prevSubLevel=sub;
+  }else if(sub!==prevSubLevel){
+    showBanner(TIERS[t].name+' \u00b7 LEVEL '+sub,1100);playSound('round');prevSubLevel=sub;
+  }
   updateTierHUD();
 }
 function completeRound(){
@@ -1140,7 +1192,7 @@ function startGame(fromPro){
   ensureAudio();
   lives=3;gameRunning=true;paused=false;menuOpen=false;
   proStartMode=!!fromPro;proFailsInMode=0;
-  if(fromPro){score=350;prevTier='pro';}else{score=0;prevTier='beginner';}
+  if(fromPro){score=350;prevTier='pro';prevSubLevel=1;}else{score=0;prevTier='beginner';prevSubLevel=1;}
   document.getElementById('startScreen').classList.remove('show');
   document.getElementById('gameOverOverlay').classList.remove('show');
   updateScoreHUD();updateLivesHUD();updateTierHUD();
@@ -1153,7 +1205,9 @@ document.getElementById('btnStartFromPro').addEventListener('click',()=>startGam
 document.getElementById('btnPlayAgainPro').addEventListener('click',()=>startGame(true));
 
 /* ══════════════════════════════════════════════════════
-   TAP / RAYCASTING  (local-coord — correct for all faces)
+   TAP / RAYCASTING  (uses the raycast hit's own UV — always matches
+   whatever THREE.js actually mapped the texture to on that face, no
+   per-face hand-derived coordinate math to get subtly wrong)
 ══════════════════════════════════════════════════════ */
 function handleCellTap(fi,row,col){
   const digit=gridData[fi][row][col],needed=targetSequence[foundIndex];
@@ -1190,13 +1244,9 @@ function handlePointerTap(cx,cy){
   raycaster.setFromCamera(pointerNDC,camera);
   const hits=raycaster.intersectObject(box);if(!hits.length)return;
   const hit=hits[0],mi=hit.face.materialIndex;if(!SIDE_FACES.includes(mi))return;
-  const lp=box.worldToLocal(hit.point.clone());
-  const cl=v=>Math.min(GRID-1,Math.max(0,Math.floor(v*GRID)));
-  let row,col;
-  if(mi===0){col=cl((1-lp.z)/2);row=cl((1-lp.y)/2);}
-  else if(mi===1){col=cl((lp.z+1)/2);row=cl((1-lp.y)/2);}
-  else if(mi===4){col=cl((lp.x+1)/2);row=cl((1-lp.y)/2);}
-  else{col=cl((1-lp.x)/2);row=cl((1-lp.y)/2);}
+  if(!hit.uv)return; /* shouldn't happen for a BufferGeometry box, but never guess a cell from nothing */
+  const col=Math.min(GRID-1,Math.max(0,Math.floor(hit.uv.x*GRID)));
+  const row=Math.min(GRID-1,Math.max(0,Math.floor((1-hit.uv.y)*GRID)));
   handleCellTap(mi,row,col);
 }
 function updateCamera(){
@@ -1206,10 +1256,23 @@ function updateCamera(){
   camera.lookAt(0,0,0);
 }
 renderer.domElement.addEventListener('mousedown',e=>{isDragging=true;lastX=downX=e.clientX;lastY=downY=e.clientY;movedDist=0;});
-window.addEventListener('mousemove',e=>{if(!isDragging)return;camTheta-=(e.clientX-lastX)*0.008;camPhi=Math.max(-1.2,Math.min(1.2,camPhi-(e.clientY-lastY)*0.008));lastX=e.clientX;lastY=e.clientY;movedDist=Math.hypot(e.clientX-downX,e.clientY-downY);updateCamera();});
+window.addEventListener('mousemove',e=>{
+  if(!isDragging)return;
+  movedDist=Math.hypot(e.clientX-downX,e.clientY-downY);
+  if(movedDist<6){lastX=e.clientX;lastY=e.clientY;return;} /* still might be a tap — don't perturb the camera for jitter */
+  camTheta-=(e.clientX-lastX)*0.008;camPhi=Math.max(-1.2,Math.min(1.2,camPhi-(e.clientY-lastY)*0.008));
+  lastX=e.clientX;lastY=e.clientY;updateCamera();
+});
 window.addEventListener('mouseup',e=>{if(isDragging&&movedDist<6)handlePointerTap(e.clientX,e.clientY);isDragging=false;});
 renderer.domElement.addEventListener('touchstart',e=>{isDragging=true;lastX=downX=e.touches[0].clientX;lastY=downY=e.touches[0].clientY;movedDist=0;},{passive:true});
-window.addEventListener('touchmove',e=>{if(!isDragging)return;camTheta-=(e.touches[0].clientX-lastX)*0.008;camPhi=Math.max(-1.2,Math.min(1.2,camPhi-(e.touches[0].clientY-lastY)*0.008));lastX=e.touches[0].clientX;lastY=e.touches[0].clientY;movedDist=Math.hypot(e.touches[0].clientX-downX,e.touches[0].clientY-downY);updateCamera();},{passive:true});
+window.addEventListener('touchmove',e=>{
+  if(!isDragging)return;
+  const tx=e.touches[0].clientX,ty=e.touches[0].clientY;
+  movedDist=Math.hypot(tx-downX,ty-downY);
+  if(movedDist<6){lastX=tx;lastY=ty;return;} /* still might be a tap — don't perturb the camera for jitter */
+  camTheta-=(tx-lastX)*0.008;camPhi=Math.max(-1.2,Math.min(1.2,camPhi-(ty-lastY)*0.008));
+  lastX=tx;lastY=ty;updateCamera();
+},{passive:true});
 window.addEventListener('touchend',e=>{if(isDragging&&movedDist<6&&e.changedTouches.length)handlePointerTap(e.changedTouches[0].clientX,e.changedTouches[0].clientY);isDragging=false;},{passive:true});
 window.addEventListener('wheel',e=>{camDist=Math.max(5.0,Math.min(20,camDist+e.deltaY*0.01));updateCamera();});
 
