@@ -197,9 +197,9 @@ body.theme-white #gameOverOverlay .score-big{color:#1a2a3a}
   <div id="banner"></div>
   <div id="controlsRow">
     <button class="btn" id="btnPause">&#9646;&#9646; Pause</button>
-
+    <button class="btn" id="btnThemePicker">&#127775; Theme</button>
     <button class="btn" id="btnSettings">&#9881; Settings</button>
-    
+    <button class="btn" id="btnMultiplayer">&#128310; Multi</button>
   </div>
 </div>
 
@@ -781,12 +781,10 @@ function drawCell(fi,row,col){
 }
 function drawFace(fi){for(let r=0;r<GRID;r++)for(let c=0;c<GRID;c++)drawCell(fi,r,c);}
 function flashCell(fi,row,col,color,revertDigit){
-  if(revertDigit!==undefined)gridData[fi][row][col]=revertDigit; /* update data first — never leave a stale digit tappable during the flash */
-  drawCell(fi,row,col);
   const ctx=faceCtx[fi],x=col*CELL,y=row*CELL;
   ctx.fillStyle=color;ctx.globalAlpha=0.55;ctx.fillRect(x+3,y+3,CELL-6,CELL-6);ctx.globalAlpha=1;
   faceTextures[fi].needsUpdate=true;
-  setTimeout(()=>{drawCell(fi,row,col);},240);
+  setTimeout(()=>{if(revertDigit!==undefined)gridData[fi][row][col]=revertDigit;drawCell(fi,row,col);},240);
 }
 function regenerateGrid(){
   SIDE_FACES.forEach(f=>{for(let r=0;r<GRID;r++)for(let c=0;c<GRID;c++)gridData[f][r][c]=Math.floor(Math.random()*10);});
@@ -1155,9 +1153,7 @@ document.getElementById('btnStartFromPro').addEventListener('click',()=>startGam
 document.getElementById('btnPlayAgainPro').addEventListener('click',()=>startGame(true));
 
 /* ══════════════════════════════════════════════════════
-   TAP / RAYCASTING  (uses the raycast hit's own UV — always matches
-   whatever THREE.js actually mapped the texture to on that face, no
-   per-face hand-derived coordinate math to get subtly wrong)
+   TAP / RAYCASTING  (local-coord — correct for all faces)
 ══════════════════════════════════════════════════════ */
 function handleCellTap(fi,row,col){
   const digit=gridData[fi][row][col],needed=targetSequence[foundIndex];
@@ -1194,9 +1190,13 @@ function handlePointerTap(cx,cy){
   raycaster.setFromCamera(pointerNDC,camera);
   const hits=raycaster.intersectObject(box);if(!hits.length)return;
   const hit=hits[0],mi=hit.face.materialIndex;if(!SIDE_FACES.includes(mi))return;
-  if(!hit.uv)return; /* shouldn't happen for a BufferGeometry box, but never guess a cell from nothing */
-  const col=Math.min(GRID-1,Math.max(0,Math.floor(hit.uv.x*GRID)));
-  const row=Math.min(GRID-1,Math.max(0,Math.floor((1-hit.uv.y)*GRID)));
+  const lp=box.worldToLocal(hit.point.clone());
+  const cl=v=>Math.min(GRID-1,Math.max(0,Math.floor(v*GRID)));
+  let row,col;
+  if(mi===0){col=cl((1-lp.z)/2);row=cl((1-lp.y)/2);}
+  else if(mi===1){col=cl((lp.z+1)/2);row=cl((1-lp.y)/2);}
+  else if(mi===4){col=cl((lp.x+1)/2);row=cl((1-lp.y)/2);}
+  else{col=cl((1-lp.x)/2);row=cl((1-lp.y)/2);}
   handleCellTap(mi,row,col);
 }
 function updateCamera(){
