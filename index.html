@@ -74,6 +74,26 @@ body.theme-neon{
   --flbl:rgba(255,0,255,0.6);--fdotbd:rgba(255,0,255,0.5);--fdot:#ff00ff;
   --mpbg:rgba(255,0,255,0.05);--mpbd:rgba(255,0,255,0.2);--hudlbl:rgba(255,0,255,0.55);
 }
+body.theme-black{
+  --bg1:#000000;--bg2:#000000;--accent:#e8e8e8;--ar:232,232,232;
+  --panel:#111111;--panel2:#0a0a0a;
+  --bb:rgba(232,232,232,0.07);--bbh:rgba(232,232,232,0.14);
+  --bc:rgba(232,232,232,0.25);--bch:rgba(232,232,232,0.6);--bcolor:#c8c8c8;
+  --ovbg:rgba(0,0,0,0.96);--barbg:rgba(255,255,255,0.06);--timerborder:rgba(255,255,255,0.18);
+  --tabg:rgba(255,255,255,0.04);--tabc:rgba(255,255,255,0.2);--tacolor:#c8c8c8;
+  --stat:rgba(232,232,232,0.65);--lbl:rgba(232,232,232,0.4);--sub:rgba(232,232,232,0.5);
+  --field:rgba(232,232,232,0.5);--sborder:rgba(255,255,255,0.1);
+  --swbg:rgba(255,255,255,0.08);--swbd:rgba(255,255,255,0.3);
+  --swth:rgba(255,255,255,0.45);--swonbg:rgba(255,255,255,0.25);--swon:#e8e8e8;
+  --tshadow:rgba(255,255,255,0.5);--pshadow:rgba(255,255,255,0.04);--pborder:rgba(255,255,255,0.18);
+  --dbd:rgba(255,255,255,0.22);--dbbg:rgba(255,255,255,0.05);--dbc:rgba(255,255,255,0.3);
+  --dbfc:rgba(255,255,255,0.22);--dbfbd:rgba(255,255,255,0.1);
+  --dbnc:#e8e8e8;--dbnbd:#e8e8e8;--dbnbg:rgba(255,255,255,0.1);
+  --banner:#e8e8e8;--banshadow:rgba(255,255,255,0.7);
+  --lives:#ff4455;--splitbd:rgba(255,255,255,0.2);--pane2bg:#0a0a0a;
+  --flbl:rgba(232,232,232,0.55);--fdotbd:rgba(255,255,255,0.4);--fdot:#e8e8e8;
+  --mpbg:rgba(255,255,255,0.04);--mpbd:rgba(255,255,255,0.15);--hudlbl:rgba(232,232,232,0.5);
+}
 html,body{background:radial-gradient(ellipse at 50% 30%,var(--bg1) 0%,var(--bg2) 100%);overflow:hidden;font-family:"Courier New",monospace;height:100%;color:var(--accent);user-select:none}
 body{display:flex;flex-direction:column;height:100vh}
 canvas{display:block}
@@ -177,9 +197,9 @@ body.theme-white #gameOverOverlay .score-big{color:#1a2a3a}
   <div id="banner"></div>
   <div id="controlsRow">
     <button class="btn" id="btnPause">&#9646;&#9646; Pause</button>
-    <button class="btn" id="btnThemePicker">&#127775; Theme</button>
+
     <button class="btn" id="btnSettings">&#9881; Settings</button>
-    <button class="btn" id="btnMultiplayer">&#128310; Multi</button>
+    
   </div>
 </div>
 
@@ -239,6 +259,7 @@ body.theme-white #gameOverOverlay .score-big{color:#1a2a3a}
       <button class="theme-btn" data-theme="green" style="flex:1;padding:9px 4px;border-radius:6px;border:2px solid #39ff8c;background:#0a2a10;color:#39ff8c;font-family:'Courier New',monospace;font-size:11px;font-weight:bold;cursor:pointer;">&#127807; Green</button>
       <button class="theme-btn" data-theme="white" style="flex:1;padding:9px 4px;border-radius:6px;border:2px solid #aaa;background:#fff;color:#1a2a3a;font-family:'Courier New',monospace;font-size:11px;font-weight:bold;cursor:pointer;">&#9729; White</button>
       <button class="theme-btn" data-theme="neon"  style="flex:1;padding:9px 4px;border-radius:6px;border:2px solid #ff00ff;background:#1a0030;color:#ff00ff;font-family:'Courier New',monospace;font-size:11px;font-weight:bold;cursor:pointer;">&#10024; Neon</button>
+      <button class="theme-btn" data-theme="black" style="flex:1;padding:9px 4px;border-radius:6px;border:2px solid #888;background:#000;color:#e8e8e8;font-family:'Courier New',monospace;font-size:11px;font-weight:bold;cursor:pointer;">&#9632; Black</button>
     </div>
     <div class="setting-row"><span>Sound effects</span>
       <label class="switch"><input type="checkbox" id="toggleSound" checked><span class="slider"></span></label></div>
@@ -335,6 +356,9 @@ body.theme-white #gameOverOverlay .score-big{color:#1a2a3a}
       <button class="btn theme-btn" data-theme="neon" style="padding:14px;text-align:left;display:flex;align-items:center;gap:12px;">
         <span style="font-size:20px;">&#10024;</span><span><b style="display:block;">NEON</b><span style="font-size:10px;opacity:0.7;">Dark, glowing magenta/cyan</span></span>
       </button>
+      <button class="btn theme-btn" data-theme="black" style="padding:14px;text-align:left;display:flex;align-items:center;gap:12px;background:#000;border-color:#888;color:#e8e8e8;">
+        <span style="font-size:20px;">&#9632;</span><span><b style="display:block;">BLACK</b><span style="font-size:10px;opacity:0.7;">Pure black, sharp contrast</span></span>
+      </button>
     </div>
   </div>
 </div>
@@ -381,8 +405,6 @@ body.theme-white #gameOverOverlay .score-big{color:#1a2a3a}
         onerror="window.__missingLib=window.__missingLib||'QRCode'"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"
         onerror="window.__missingLib=window.__missingLib||'jsQR'"></script>
-        <script src="trace.js"></script>
-          
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
         onerror="window.__missingLib=window.__missingLib||'Three.js'"></script>
 <script>
@@ -410,50 +432,65 @@ const SIDE_FACES=[0,1,4,5];
 const TIERS={
   beginner:    {name:'BEGINNER',          roundTime:25,lenMin:3,lenMax:4,spinBase:0.010,wrongPenalty:1.0,mult:1.0, color:'#39ff8c',cubeDur:4.0 },
   middle:      {name:'MIDDLE',            roundTime:20,lenMin:4,lenMax:5,spinBase:0.020,wrongPenalty:1.5,mult:1.4, color:'#ffd23f',cubeDur:2.4 },
-  pro:         {name:'PRO',               roundTime:19,lenMin:5,lenMax:6,spinBase:0.028,wrongPenalty:1.0,mult:1.8, color:'#ff5577',cubeDur:1.1 },
-  masterPro:   {name:'MASTER PRO',        roundTime:17,lenMin:6,lenMax:7,spinBase:0.030,wrongPenalty:1.5,mult:1.5, color:'#ff8c00',cubeDur:0.75},
-  legendDemon: {name:'LEGEND DEMON',      roundTime:16.2,lenMin:3,lenMax:4,spinBase:0.033,wrongPenalty:2.0,mult:1.5, color:'#bf00ff',cubeDur:0.5 },
-  overallMaster:{name:'THE OVERALL MASTER',roundTime:14,lenMin:8,lenMax:9,spinBase:0.039,wrongPenalty:5.2,mult:3.0,color:'#fff700',cubeDur:0.3 },
+  pro:         {name:'PRO',               roundTime:19,lenMin:5,lenMax:6,spinBase:0.034,wrongPenalty:1.0,mult:1.8, color:'#ff5577',cubeDur:1.1 },
+  masterPro:   {name:'MASTER PRO',        roundTime:17,lenMin:6,lenMax:7,spinBase:0.042,wrongPenalty:1.5,mult:2.5, color:'#ff8c00',cubeDur:0.75},
+  legendDemon: {name:'LEGEND DEMON',      roundTime:16,lenMin:7,lenMax:8,spinBase:0.064,wrongPenalty:1.0,mult:3.5, color:'#bf00ff',cubeDur:0.5 },
+  overallMaster:{name:'THE OVERALL MASTER',roundTime:14,lenMin:8,lenMax:9,spinBase:0.049,wrongPenalty:2.2,mult:5.0,color:'#fff700',cubeDur:0.3 },
 };
 
 const THEMES={
   green:{
     clearColor:0x000000,clearAlpha:0,
-    boxColor:0x00c84a,boxRough:0.3,boxMetal:0.5,boxEmissive:0x000000,boxEmInt:0,
+    boxColor:0x111111,boxRough:0.55,boxMetal:0.25,boxEmissive:0x050a05,boxEmInt:0.06,
     faceEmissive:0x0c2616,faceEmInt:0.3,
     ambColor:0x0a1a0a,ambInt:0.6,keyColor:0xffffff,keyInt:1.6,
     fillColor:0x00ff60,fillInt:0.45,rimColor:0x00ffaa,rimInt:1.2,
     floorColor:0x050d06,partColor:0x00ff70,
-    getCell:()=>({bg:'#04130a',inner:'rgba(0,255,90,0.06)',border:'rgba(0,255,110,0.35)',text:'#39ff8c'}),
+    diceBlack:'#0a1a0a',diceWhite:'#d0f0d0',dicePip:'rgba(57,255,140,0.4)',diceGap:'#030a03',
+    diceTopBg:'#050d05',diceTopPip:'#39ff8c',diceBotBg:'#d0f0d0',diceBotPip:'#0a1a0a',
+    getCell:(r,c)=>{const b=(r+c)%2===0;return{bg:b?'#0d200d':'#c8ecc8',text:b?'#5fffaa':'#0a1a0a',pip:b?'rgba(57,255,140,0.5)':'rgba(10,26,10,0.4)',stroke:b?'rgba(0,0,0,0.7)':'rgba(0,40,0,0.5)'};},
     flashRight:'#00ff66',flashWrong:'#ff3344',
   },
   white:{
     clearColor:0xf0f5f0,clearAlpha:1,
-    boxColor:0xffffff,boxRough:0.12,boxMetal:0.08,boxEmissive:0xcccccc,boxEmInt:0.04,
+    boxColor:0x111111,boxRough:0.50,boxMetal:0.20,boxEmissive:0x050505,boxEmInt:0.05,
     faceEmissive:0x999999,faceEmInt:0.04,
     ambColor:0xffffff,ambInt:1.0,keyColor:0xfffdf5,keyInt:1.6,
     fillColor:0xe8f0ff,fillInt:0.5,rimColor:0xfff5e8,rimInt:0.7,
     floorColor:0xe0eee0,partColor:0x336699,
+    diceBlack:'#222222',diceWhite:'#f0f0f0',dicePip:'rgba(255,255,255,0.45)',diceGap:'#555555',
+    diceTopBg:'#111111',diceTopPip:'#f4f4f4',diceBotBg:'#f4f4f4',diceBotPip:'#111111',
     getCell:(r,c)=>{
-      const D=['#1a4f9c','#9c1a1a','#8a6000','#5a0d8a','#0d5c25','#9c0d35','#c45000','#0d5c5c'];
-      return{bg:D[(r*4+c)%D.length],inner:'rgba(255,255,255,0.18)',border:'rgba(0,0,0,0.25)',text:'#fff'};
+      /* Original deep saturated palette — all with white text for maximum legibility */
+      const DEEP=['#1a4f9c','#9c1a1a','#8a6000','#5a0d8a','#0d5c25','#9c0d35','#c45000','#0d5c5c'];
+      const bg=DEEP[(r*4+c)%DEEP.length];
+      return{bg,text:'#ffffff',pip:'rgba(255,255,255,0.45)',stroke:'rgba(0,0,0,0.6)'};
     },
-    flashRight:'#00aa33',flashWrong:'#cc1111',
+    flashRight:'#00cc44',flashWrong:'#ee1111',
   },
   neon:{
     clearColor:0x02000a,clearAlpha:1,
-    boxColor:0x1a0030,boxRough:0.04,boxMetal:0.95,boxEmissive:0x5500aa,boxEmInt:0.4,
+    boxColor:0x111111,boxRough:0.50,boxMetal:0.30,boxEmissive:0x110022,boxEmInt:0.15,
     faceEmissive:0x330055,faceEmInt:0.6,
     ambColor:0x110022,ambInt:0.4,keyColor:0xff00ff,keyInt:1.8,
     fillColor:0x00ffff,fillInt:0.6,rimColor:0xffff00,rimInt:1.4,
     floorColor:0x05000f,partColor:0xff00ff,
-    getCell:(r,c)=>{
-      const D=['#00006b','#006b00','#6b0000','#006b6b','#6b006b','#6b6b00','#00336b','#33006b'];
-      const L=['#00ffff','#00ff00','#ff3333','#ffff00','#ff00ff','#ff8800','#0088ff','#ff0088'];
-      const idx=(r*4+c)%8,light=(r+c)%2===0;
-      return{bg:light?L[idx]:D[idx],inner:'rgba(255,255,255,0.08)',border:'rgba(255,0,255,0.4)',text:light?'#000':'#fff'};
-    },
+    diceBlack:'#1a0030',diceWhite:'#ff00ff',dicePip:'rgba(0,255,255,0.5)',diceGap:'#060010',
+    diceTopBg:'#0a0020',diceTopPip:'#ff00ff',diceBotBg:'#ff00ff',diceBotPip:'#000',
+    getCell:(r,c)=>{const b=(r+c)%2===0;return{bg:b?'#180025':'#ff00ff',text:b?'#00ffff':'#0a0020',pip:b?'rgba(0,255,255,0.55)':'rgba(0,0,80,0.4)',stroke:b?'rgba(0,0,0,0.8)':'rgba(0,0,0,0.5)'};},
     flashRight:'#00ffff',flashWrong:'#ff00ff',
+  },
+  black:{
+    clearColor:0x000000,clearAlpha:1,
+    boxColor:0x111111,boxRough:0.58,boxMetal:0.22,boxEmissive:0x050505,boxEmInt:0.06,
+    faceEmissive:0x080808,faceEmInt:0.09,
+    ambColor:0x111111,ambInt:0.55,keyColor:0xffffff,keyInt:1.9,
+    fillColor:0x333333,fillInt:0.35,rimColor:0x888888,rimInt:0.75,
+    floorColor:0x050505,partColor:0x888888,
+    diceBlack:'#0a0a0a',diceWhite:'#f2f2f2',dicePip:'rgba(255,255,255,0.32)',diceGap:'#1c1c1c',
+    diceTopBg:'#0a0a0a',diceTopPip:'#e8e8e8',diceBotBg:'#f2f2f2',diceBotPip:'#0a0a0a',
+    getCell:(r,c)=>{const b=(r+c)%2===0;return{bg:b?'#0a0a0a':'#f2f2f2',text:b?'#f2f2f2':'#0a0a0a',pip:b?'rgba(255,255,255,0.28)':'rgba(0,0,0,0.28)'};},
+    flashRight:'#00e836',flashWrong:'#ff2222',
   },
 };
 
@@ -519,10 +556,11 @@ const PLAYLIST = [
   { file: 'song3.mp3',  name: 'Track 3'  },
   { file: 'song4.mp3',  name: 'Track 4'  },
   { file: 'song5.mp3',  name: 'Track 5'  },
-  { file: 'song6.mp3',  name: 'Afrobeat Fire' },
-  { file: 'song7.mp3',    name: 'Hip Hop Heat'  },
-  { file: 'song8.mp3',       name: 'Pop Anthem'    },
-  
+  /* ── add more lines here, e.g.:
+  { file: 'afrobeat.mp3',  name: 'Afrobeat Fire' },
+  { file: 'hiphop.mp3',    name: 'Hip Hop Heat'  },
+  { file: 'pop.mp3',       name: 'Pop Anthem'    },
+  ── */
 ];
 
 /* ── MP3 Audio Player ────────────────────────────────────────────────── */
@@ -627,21 +665,23 @@ function computeSpin(){const p=tierParams();return p.spinBase+Math.min(0.04,scor
 ══════════════════════════════════════════════════════ */
 const scene=new THREE.Scene();
 const camera=new THREE.PerspectiveCamera(45,1,0.1,100);
-camera.position.set(4,3.2,5); camera.lookAt(0,0,0);
+camera.position.set(7.5,5.5,9.5); camera.lookAt(0,0,0);
 const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
 renderer.setPixelRatio(devicePixelRatio);
 renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.1;
 topPane.prepend(renderer.domElement);
 
-const ambLight=new THREE.AmbientLight(0x0a1a0a,0.6); scene.add(ambLight);
+const ambLight=new THREE.AmbientLight(0xffffff,1.1); scene.add(ambLight); /* high ambient = no dark face shadows */
 const keyLight=new THREE.DirectionalLight(0xffffff,1.6);
 keyLight.position.set(5,8,6);keyLight.castShadow=true;
 keyLight.shadow.mapSize.set(2048,2048);
 keyLight.shadow.camera.left=keyLight.shadow.camera.bottom=-6;
 keyLight.shadow.camera.right=keyLight.shadow.camera.top=6;
 scene.add(keyLight);
-const fillLight=new THREE.DirectionalLight(0x00ff60,0.45);fillLight.position.set(-4,2,-3);scene.add(fillLight);
+const fillLight=new THREE.DirectionalLight(0xffffff,0.55);fillLight.position.set(-4,2,-3);scene.add(fillLight);
+const fillLight2=new THREE.DirectionalLight(0xffffff,0.45);fillLight2.position.set(0,-6,3);scene.add(fillLight2);
+const fillLight3=new THREE.DirectionalLight(0xffffff,0.40);fillLight3.position.set(3,2,-6);scene.add(fillLight3);
 const rimLight=new THREE.PointLight(0x00ffaa,1.2,15);rimLight.position.set(-3,5,-4);scene.add(rimLight);
 const floor=new THREE.Mesh(new THREE.PlaneGeometry(20,20),new THREE.MeshStandardMaterial({color:0x050d06,roughness:1}));
 floor.rotation.x=-Math.PI/2;floor.position.y=-2.8;floor.receiveShadow=true;scene.add(floor);
@@ -652,8 +692,32 @@ const particles=new THREE.Points(partGeo,new THREE.PointsMaterial({color:0x00ff7
 scene.add(particles);
 
 /* ══════════════════════════════════════════════════════
-   MAIN FACE GRID CANVASES
+   DICE DRAWING HELPERS
 ══════════════════════════════════════════════════════ */
+function diceRoundRect(ctx,x,y,w,h,r){
+  ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);
+  ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);
+  ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);
+  ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);
+  ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
+}
+function dicePip(ctx,cx,cy,r,color){
+  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();
+}
+/* Draw dice-face pip pattern for top/bottom faces (classic dice layouts) */
+function drawDiceFace(ctx,size,bgColor,pipColor,pipCount){
+  ctx.fillStyle=bgColor;ctx.fillRect(0,0,size,size);
+  const pr=size*0.09, m=size*0.28, c=size*0.5, e=size-m;
+  const layouts={
+    1:[[c,c]],
+    2:[[m,m],[e,e]],
+    5:[[m,m],[e,m],[c,c],[m,e],[e,e]],
+    6:[[m,m],[e,m],[m,c],[e,c],[m,e],[e,e]],
+  };
+  (layouts[pipCount]||layouts[1]).forEach(([x,y])=>dicePip(ctx,x,y,pr,pipColor));
+}
+
+/* ── Main face grid canvases ── */
 const gridData={},faceCanvas={},faceCtx={},faceTextures={};
 SIDE_FACES.forEach(f=>{
   gridData[f]=Array.from({length:GRID},()=>Array.from({length:GRID},()=>0));
@@ -662,23 +726,67 @@ SIDE_FACES.forEach(f=>{
   const tex=new THREE.CanvasTexture(cv);tex.minFilter=THREE.LinearFilter;
   faceTextures[f]=tex;
 });
+
+/* ── Top/bottom decorative dice-face canvases ── */
+const diceTopCv=document.createElement('canvas'),diceBotCv=document.createElement('canvas');
+diceTopCv.width=diceTopCv.height=diceBotCv.width=diceBotCv.height=TEX_SIZE;
+const diceTopCtx=diceTopCv.getContext('2d'),diceBotCtx=diceBotCv.getContext('2d');
+const diceTopTex=new THREE.CanvasTexture(diceTopCv),diceBotTex=new THREE.CanvasTexture(diceBotCv);
+diceTopTex.minFilter=diceBotTex.minFilter=THREE.LinearFilter;
+
+function redrawDiceFaces(){
+  /* Top and bottom faces: clean solid colour — no pip dots */
+  const t=THEMES[currentTheme];
+  diceTopCtx.fillStyle=t.diceTopBg; diceTopCtx.fillRect(0,0,TEX_SIZE,TEX_SIZE);
+  /* subtle branding text centered */
+  diceTopCtx.fillStyle=t.diceTopPip;
+  diceTopCtx.font=`bold ${Math.floor(TEX_SIZE*0.13)}px Arial,sans-serif`;
+  diceTopCtx.textAlign='center'; diceTopCtx.textBaseline='middle';
+  diceTopCtx.globalAlpha=0.35;
+  diceTopCtx.fillText('BOXBOSS',TEX_SIZE/2,TEX_SIZE/2);
+  diceTopCtx.globalAlpha=1;
+  diceTopTex.needsUpdate=true;
+  diceBotCtx.fillStyle=t.diceBotBg; diceBotCtx.fillRect(0,0,TEX_SIZE,TEX_SIZE);
+  diceBotTex.needsUpdate=true;
+}
+
+/* ── Dice-styled cell drawing ── */
 function drawCell(fi,row,col){
   const ctx=faceCtx[fi],x=col*CELL,y=row*CELL;
-  const{bg,inner,border,text}=THEMES[currentTheme].getCell(row,col);
-  ctx.fillStyle=bg;ctx.fillRect(x,y,CELL,CELL);
-  ctx.fillStyle=inner;ctx.fillRect(x+3,y+3,CELL-6,CELL-6);
-  ctx.strokeStyle=border;ctx.lineWidth=2;ctx.strokeRect(x+3,y+3,CELL-6,CELL-6);
-  ctx.fillStyle=text;ctx.font=`bold ${Math.floor(CELL*0.5)}px "Courier New",monospace`;
+  const t=THEMES[currentTheme],{bg,text,pip}=t.getCell(row,col);
+  const gap=3,cr=10;
+  /* gap/groove colour */
+  ctx.fillStyle=t.diceGap||'#1a1a1a';ctx.fillRect(x,y,CELL,CELL);
+  /* rounded dice-face cell */
+  diceRoundRect(ctx,x+gap,y+gap,CELL-gap*2,CELL-gap*2,cr);
+  ctx.fillStyle=bg;ctx.fill();
+  /* 4 corner pip dots for dice aesthetic */
+  const pr=CELL*0.038,po=CELL*0.175;
+  dicePip(ctx,x+gap+po,    y+gap+po,    pr,pip);
+  dicePip(ctx,x+CELL-gap-po,y+gap+po,   pr,pip);
+  dicePip(ctx,x+gap+po,    y+CELL-gap-po,pr,pip);
+  dicePip(ctx,x+CELL-gap-po,y+CELL-gap-po,pr,pip);
+  /* large bold number with contrast outline for readability in all themes */
+  const digit=String(gridData[fi][row][col]);
+  const fs=Math.floor(CELL*0.60);
+  ctx.font=`bold ${fs}px Arial Black,Arial,sans-serif`;
   ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText(String(gridData[fi][row][col]),x+CELL/2,y+CELL/2+CELL*0.03);
+  const cx2=x+CELL/2, cy2=y+CELL/2+1;
+  /* dark stroke behind the number for contrast against any background */
+  const strokeCol=typeof pip==='string'&&pip.includes('255,255,255')?'rgba(0,0,0,0.75)':'rgba(0,0,0,0.65)';
+  ctx.strokeStyle=strokeCol;ctx.lineWidth=Math.max(3,fs*0.08);ctx.lineJoin='round';
+  ctx.strokeText(digit,cx2,cy2);
+  ctx.fillStyle=text;ctx.fillText(digit,cx2,cy2);
   faceTextures[fi].needsUpdate=true;
 }
 function drawFace(fi){for(let r=0;r<GRID;r++)for(let c=0;c<GRID;c++)drawCell(fi,r,c);}
 function flashCell(fi,row,col,color,revertDigit){
+  if(revertDigit!==undefined)gridData[fi][row][col]=revertDigit; /* update data first — never leave a stale digit tappable during the flash */
+  drawCell(fi,row,col);
   const ctx=faceCtx[fi],x=col*CELL,y=row*CELL;
   ctx.fillStyle=color;ctx.globalAlpha=0.55;ctx.fillRect(x+3,y+3,CELL-6,CELL-6);ctx.globalAlpha=1;
   faceTextures[fi].needsUpdate=true;
-  setTimeout(()=>{if(revertDigit!==undefined)gridData[fi][row][col]=revertDigit;drawCell(fi,row,col);},240);
+  setTimeout(()=>{drawCell(fi,row,col);},240);
 }
 function regenerateGrid(){
   SIDE_FACES.forEach(f=>{for(let r=0;r<GRID;r++)for(let c=0;c<GRID;c++)gridData[f][r][c]=Math.floor(Math.random()*10);});
@@ -699,30 +807,86 @@ function regenerateGrid(){
 }
 
 /* ══════════════════════════════════════════════════════
-   MAIN BOX MESH
+   MAIN BOX MESH  — Modern Artistic Dice Shape
 ══════════════════════════════════════════════════════ */
-const geo=new THREE.BoxGeometry(2,2,2);
-const plainMat=new THREE.MeshStandardMaterial({color:0x00c84a,roughness:0.3,metalness:0.5});
+/* Slightly beveled box: geometry stays standard BoxGeometry but
+   materials + lighting + thick white edges give the dice look   */
+/* ── Dice geometry constants ──────────────────────────────────────────
+   A real dice has rounded edges and corners.  We achieve this by:
+   1. Making the main BoxGeometry slightly smaller (inset by DICE_R)
+   2. Capping every edge with a CylinderGeometry (12 edges)
+   3. Capping every corner with a SphereGeometry (8 corners)
+   All edge/corner pieces share the body material so theme colours
+   update automatically with applyTheme().
+─────────────────────────────────────────────────────────────────── */
+const DICE_R = 0.18;          /* bevel radius of rounded corners/edges */
+const DICE_R_SCALE = 2.2;    /* overall size multiplier */
+const DICE_S = (1 - DICE_R) * DICE_R_SCALE;   /* half-extent of flat face area */
+
+const geo=new THREE.BoxGeometry(DICE_S*2, DICE_S*2, DICE_S*2);
+
+const plainMat=new THREE.MeshStandardMaterial({
+  color:0x111111,roughness:0.55,metalness:0.25,
+  emissive:new THREE.Color(0x050505),emissiveIntensity:0.08
+});
 const materials=[];
 for(let i=0;i<6;i++){
-  materials[i]=SIDE_FACES.includes(i)
-    ?new THREE.MeshStandardMaterial({map:faceTextures[i],roughness:0.35,metalness:0.22,emissive:new THREE.Color(0x0c2616),emissiveIntensity:0.3})
-    :plainMat;
+  if(SIDE_FACES.includes(i)){
+    materials[i]=new THREE.MeshStandardMaterial({
+      map:faceTextures[i],roughness:0.12,metalness:0.0,
+      emissive:new THREE.Color(0x000000),emissiveIntensity:0.0
+    });
+  } else if(i===2){
+    materials[i]=new THREE.MeshStandardMaterial({
+      map:diceTopTex,roughness:0.12,metalness:0.0,
+      emissive:new THREE.Color(0x000000),emissiveIntensity:0.0
+    });
+  } else {
+    materials[i]=new THREE.MeshStandardMaterial({
+      map:diceBotTex,roughness:0.12,metalness:0.0,
+      emissive:new THREE.Color(0x000000),emissiveIntensity:0.0
+    });
+  }
 }
-const wireMat=new THREE.MeshBasicMaterial({color:0x00ff70,wireframe:true,transparent:true,opacity:0.6});
-const box=new THREE.Mesh(geo,materials);box.castShadow=true;box.receiveShadow=true;box.rotation.x=0.12;
+const wireMat=new THREE.MeshBasicMaterial({color:0xffffff,wireframe:true,transparent:true,opacity:0.55});
+const box=new THREE.Mesh(geo,materials);box.castShadow=true;box.receiveShadow=true;
 const pivot=new THREE.Group();pivot.add(box);
+
+/* Rounded edges — 12 cylinders, one per edge of the cube */
+const edgeCylGeo=new THREE.CylinderGeometry(DICE_R,DICE_R,DICE_S*2,14,1);
+const cornSphGeo=new THREE.SphereGeometry(DICE_R,12,10);
+/* diceBevelMeshes: collect all edge/corner meshes for theme colour updates */
+const diceBevelMeshes=[];
+function addBevel(geo,x,y,z,rx,ry,rz){
+  const m=new THREE.Mesh(geo,plainMat);
+  m.position.set(x,y,z);if(rx)m.rotation.x=rx;if(ry)m.rotation.y=ry;if(rz)m.rotation.z=rz;
+  m.castShadow=true;pivot.add(m);diceBevelMeshes.push(m);
+}
+/* 8 corner spheres */
+const cv=[-DICE_S,DICE_S];
+for(const x of cv)for(const y of cv)for(const z of cv)addBevel(cornSphGeo,x,y,z,0,0,0);
+/* 4 edges parallel to Y axis */
+for(const x of cv)for(const z of cv)addBevel(edgeCylGeo,x,0,z,0,0,0);
+/* 4 edges parallel to X axis */
+for(const y of cv)for(const z of cv)addBevel(edgeCylGeo,0,y,z,0,0,Math.PI/2);
+/* 4 edges parallel to Z axis */
+for(const x of cv)for(const y of cv)addBevel(edgeCylGeo,x,y,0,Math.PI/2,0,0);
+
+/* Crisp white edge-line overlay for the dice silhouette */
 const edgeGeo=new THREE.EdgesGeometry(geo);
-const edges=new THREE.LineSegments(edgeGeo,new THREE.LineBasicMaterial({color:0x55ffaa,transparent:true,opacity:0.5}));
-edges.rotation.x=0.12;pivot.add(edges);
+const edges=new THREE.LineSegments(edgeGeo,new THREE.LineBasicMaterial({
+  color:0xffffff,transparent:true,opacity:0.85,linewidth:2
+}));
+pivot.add(edges);
 scene.add(pivot);
+redrawDiceFaces();
 
 /* ══════════════════════════════════════════════════════
    FRIEND LIVE 3D SCENE  — mirrors opponent's real box
 ══════════════════════════════════════════════════════ */
 let friendScene,friendCamera,friendRenderer,friendPivot,friendBoxMesh;
 let friendFaceCanvas={},friendFaceCtx={},friendFaceTextures={};
-let friendGridData={},friendRotY=0;
+let friendGridData={},friendRotYLocal=0,friendRotYRef=0,friendSpinSpeed=0.01,friendGridPending=null;
 
 function setupFriendScene(){
   const bp=document.getElementById('bottomPane');
@@ -755,20 +919,28 @@ function setupFriendScene(){
     drawFriendFace(f);
   });
 
-  /* box */
-  const fGeo=new THREE.BoxGeometry(2,2,2);
-  const fPlain=new THREE.MeshStandardMaterial({color:0x00c84a,roughness:0.3,metalness:0.5});
+  /* friend box — same rounded dice shape as main box */
+  const fGeo=new THREE.BoxGeometry(DICE_S*2,DICE_S*2,DICE_S*2);
+  const fPlain=new THREE.MeshStandardMaterial({color:0x111111,roughness:0.55,metalness:0.25,emissive:new THREE.Color(0x050505),emissiveIntensity:0.07});
   const fMats=[];
   for(let i=0;i<6;i++){
-    fMats[i]=SIDE_FACES.includes(i)
-      ?new THREE.MeshStandardMaterial({map:friendFaceTextures[i],roughness:0.35,metalness:0.22,emissive:new THREE.Color(0x0c2616),emissiveIntensity:0.3})
-      :fPlain;
+    if(SIDE_FACES.includes(i))
+      fMats[i]=new THREE.MeshStandardMaterial({map:friendFaceTextures[i],roughness:0.12,metalness:0.0,emissive:new THREE.Color(0x000000),emissiveIntensity:0.0});
+    else fMats[i]=fPlain;
   }
-  friendBoxMesh=new THREE.Mesh(fGeo,fMats);friendBoxMesh.rotation.x=0.12;
+  friendBoxMesh=new THREE.Mesh(fGeo,fMats);
   friendPivot=new THREE.Group();friendPivot.add(friendBoxMesh);friendScene.add(friendPivot);
-
-  const fEdge=new THREE.LineSegments(new THREE.EdgesGeometry(fGeo),new THREE.LineBasicMaterial({color:0x55ffaa,transparent:true,opacity:0.4}));
-  fEdge.rotation.x=0.12;friendPivot.add(fEdge);
+  /* rounded edges & corners */
+  const fCyl=new THREE.CylinderGeometry(DICE_R,DICE_R,DICE_S*2,14,1);
+  const fSph=new THREE.SphereGeometry(DICE_R,12,10);
+  const fCv=[-DICE_S,DICE_S];
+  function fBevel(g,x,y,z,rx,rz){const m=new THREE.Mesh(g,fPlain);m.position.set(x,y,z);if(rx)m.rotation.x=rx;if(rz)m.rotation.z=rz;friendPivot.add(m);}
+  for(const x of fCv)for(const y of fCv)for(const z of fCv)fBevel(fSph,x,y,z,0,0);
+  for(const x of fCv)for(const z of fCv)fBevel(fCyl,x,0,z,0,0);
+  for(const y of fCv)for(const z of fCv)fBevel(fCyl,0,y,z,0,Math.PI/2);
+  for(const x of fCv)for(const y of fCv)fBevel(fCyl,x,y,0,Math.PI/2,0);
+  const fEdge=new THREE.LineSegments(new THREE.EdgesGeometry(fGeo),new THREE.LineBasicMaterial({color:0xffffff,transparent:true,opacity:0.8}));
+  friendPivot.add(fEdge);
 
   resizeFriendRenderer();
 }
@@ -776,17 +948,29 @@ function setupFriendScene(){
 function drawFriendCell(fi,r,c,flashColor){
   const ctx=friendFaceCtx[fi],x=c*CELL,y=r*CELL;
   if(flashColor){
-    ctx.fillStyle=flashColor;ctx.globalAlpha=0.65;ctx.fillRect(x+3,y+3,CELL-6,CELL-6);ctx.globalAlpha=1;
-    friendFaceTextures[fi].needsUpdate=true;
+    ctx.fillStyle=flashColor;ctx.globalAlpha=0.65;
+    diceRoundRect(ctx,x+4,y+4,CELL-8,CELL-8,12);ctx.fill();
+    ctx.globalAlpha=1;friendFaceTextures[fi].needsUpdate=true;
     setTimeout(()=>drawFriendCell(fi,r,c,null),280);return;
   }
-  const{bg,inner,border,text}=THEMES[currentTheme].getCell(r,c);
-  ctx.fillStyle=bg;ctx.fillRect(x,y,CELL,CELL);
-  ctx.fillStyle=inner;ctx.fillRect(x+3,y+3,CELL-6,CELL-6);
-  ctx.strokeStyle=border;ctx.lineWidth=2;ctx.strokeRect(x+3,y+3,CELL-6,CELL-6);
-  ctx.fillStyle=text;ctx.font=`bold ${Math.floor(CELL*0.5)}px "Courier New",monospace`;
+  const t=THEMES[currentTheme],{bg,text,pip}=t.getCell(r,c);
+  const gap=3,cr=10;
+  ctx.fillStyle=t.diceGap||'#1a1a1a';ctx.fillRect(x,y,CELL,CELL);
+  diceRoundRect(ctx,x+gap,y+gap,CELL-gap*2,CELL-gap*2,cr);
+  ctx.fillStyle=bg;ctx.fill();
+  const pr=CELL*0.038,po=CELL*0.175;
+  dicePip(ctx,x+gap+po,    y+gap+po,    pr,pip);
+  dicePip(ctx,x+CELL-gap-po,y+gap+po,   pr,pip);
+  dicePip(ctx,x+gap+po,    y+CELL-gap-po,pr,pip);
+  dicePip(ctx,x+CELL-gap-po,y+CELL-gap-po,pr,pip);
+  const fdigit=String(friendGridData[fi][r][c]);
+  const ffs=Math.floor(CELL*0.60);
+  ctx.font=`bold ${ffs}px Arial Black,Arial,sans-serif`;
   ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText(String(friendGridData[fi][r][c]),x+CELL/2,y+CELL/2+CELL*0.03);
+  const fcx=x+CELL/2,fcy=y+CELL/2+1;
+  ctx.strokeStyle='rgba(0,0,0,0.65)';ctx.lineWidth=Math.max(3,ffs*0.08);ctx.lineJoin='round';
+  ctx.strokeText(fdigit,fcx,fcy);
+  ctx.fillStyle=text;ctx.fillText(fdigit,fcx,fcy);
   friendFaceTextures[fi].needsUpdate=true;
 }
 function drawFriendFace(fi){for(let r=0;r<GRID;r++)for(let c=0;c<GRID;c++)drawFriendCell(fi,r,c,null);}
@@ -809,20 +993,33 @@ function resizeFriendRenderer(){
 ══════════════════════════════════════════════════════ */
 function applyTheme(name){
   currentTheme=name;
-  document.body.classList.remove('theme-green','theme-white','theme-neon');
+  document.body.classList.remove('theme-green','theme-white','theme-neon','theme-black');
   document.body.classList.add('theme-'+name);
   const t=THEMES[name];
   renderer.setClearColor(t.clearColor,t.clearAlpha);
   plainMat.color.setHex(t.boxColor);plainMat.roughness=t.boxRough;plainMat.metalness=t.boxMetal;
   plainMat.emissive.setHex(t.boxEmissive);plainMat.emissiveIntensity=t.boxEmInt;plainMat.needsUpdate=true;
-  SIDE_FACES.forEach(fi=>{materials[fi].emissive.setHex(t.faceEmissive);materials[fi].emissiveIntensity=t.faceEmInt;materials[fi].needsUpdate=true;});
-  ambLight.color.setHex(t.ambColor);ambLight.intensity=t.ambInt;
+  SIDE_FACES.forEach(fi=>{materials[fi].emissive.setHex(0x000000);materials[fi].emissiveIntensity=0;materials[fi].roughness=0.12;materials[fi].needsUpdate=true;});
+  ambLight.color.setHex(0xffffff);ambLight.intensity=1.1; /* keep bright ambient constant across all themes */
   keyLight.color.setHex(t.keyColor);keyLight.intensity=t.keyInt;
   fillLight.color.setHex(t.fillColor);fillLight.intensity=t.fillInt;
   rimLight.color.setHex(t.rimColor);rimLight.intensity=t.rimInt;
   floor.material.color.setHex(t.floorColor);
   particles.material.color.setHex(t.partColor);
   SIDE_FACES.forEach(drawFace);
+  redrawDiceFaces();
+  /* update box materials roughness/metalness per theme */
+  const isDark=name==='green'||name==='neon';
+  materials.forEach(m=>{if(m&&m.color){m.roughness=isDark?0.45:0.35;m.needsUpdate=true;}});
+  /* update rounded edge/corner mesh material to match body colour */
+  diceBevelMeshes.forEach(m=>{
+    m.material.color.setHex(t.boxColor);
+    m.material.roughness=t.boxRough;m.material.metalness=t.boxMetal;
+    m.material.emissive.setHex(t.boxEmissive);m.material.emissiveIntensity=t.boxEmInt;
+    m.material.needsUpdate=true;
+  });
+  edges.material.color.setHex(name==='white'?0x222222:0xffffff);
+  edges.material.opacity=name==='white'||name==='black'?0.75:0.88;
   if(friendRenderer)applyFriendTheme();
   document.querySelectorAll('.theme-btn').forEach(b=>{
     b.style.outline=b.dataset.theme===name?'3px solid #fff':'none';
@@ -889,7 +1086,7 @@ function updateFriendHUD(fp){
     div.textContent=d;ftr.appendChild(div);
   });
   /* rotation */
-  if(friendPivot&&fp.rotY!==undefined)friendRotY=fp.rotY;
+  /* rotation handled by local prediction in animate() — do NOT set directly here */
 }
 
 /* ══════════════════════════════════════════════════════
@@ -958,7 +1155,9 @@ document.getElementById('btnStartFromPro').addEventListener('click',()=>startGam
 document.getElementById('btnPlayAgainPro').addEventListener('click',()=>startGame(true));
 
 /* ══════════════════════════════════════════════════════
-   TAP / RAYCASTING  (local-coord — correct for all faces)
+   TAP / RAYCASTING  (uses the raycast hit's own UV — always matches
+   whatever THREE.js actually mapped the texture to on that face, no
+   per-face hand-derived coordinate math to get subtly wrong)
 ══════════════════════════════════════════════════════ */
 function handleCellTap(fi,row,col){
   const digit=gridData[fi][row][col],needed=targetSequence[foundIndex];
@@ -984,7 +1183,7 @@ function shakeScreen(){
 let isDragging=false,lastX=0,lastY=0,downX=0,downY=0,movedDist=0;
 let camTheta=Math.atan2(camera.position.x,camera.position.z);
 let camPhi=Math.asin(camera.position.y/camera.position.length());
-let camDist=camera.position.length();
+let camDist=camera.position.length(); /* auto-set from above camera.position.set() */
 const raycaster=new THREE.Raycaster(),pointerNDC=new THREE.Vector2();
 
 function handlePointerTap(cx,cy){
@@ -995,13 +1194,9 @@ function handlePointerTap(cx,cy){
   raycaster.setFromCamera(pointerNDC,camera);
   const hits=raycaster.intersectObject(box);if(!hits.length)return;
   const hit=hits[0],mi=hit.face.materialIndex;if(!SIDE_FACES.includes(mi))return;
-  const lp=box.worldToLocal(hit.point.clone());
-  const cl=v=>Math.min(GRID-1,Math.max(0,Math.floor(v*GRID)));
-  let row,col;
-  if(mi===0){col=cl((1-lp.z)/2);row=cl((1-lp.y)/2);}
-  else if(mi===1){col=cl((lp.z+1)/2);row=cl((1-lp.y)/2);}
-  else if(mi===4){col=cl((lp.x+1)/2);row=cl((1-lp.y)/2);}
-  else{col=cl((1-lp.x)/2);row=cl((1-lp.y)/2);}
+  if(!hit.uv)return; /* shouldn't happen for a BufferGeometry box, but never guess a cell from nothing */
+  const col=Math.min(GRID-1,Math.max(0,Math.floor(hit.uv.x*GRID)));
+  const row=Math.min(GRID-1,Math.max(0,Math.floor((1-hit.uv.y)*GRID)));
   handleCellTap(mi,row,col);
 }
 function updateCamera(){
@@ -1016,7 +1211,7 @@ window.addEventListener('mouseup',e=>{if(isDragging&&movedDist<6)handlePointerTa
 renderer.domElement.addEventListener('touchstart',e=>{isDragging=true;lastX=downX=e.touches[0].clientX;lastY=downY=e.touches[0].clientY;movedDist=0;},{passive:true});
 window.addEventListener('touchmove',e=>{if(!isDragging)return;camTheta-=(e.touches[0].clientX-lastX)*0.008;camPhi=Math.max(-1.2,Math.min(1.2,camPhi-(e.touches[0].clientY-lastY)*0.008));lastX=e.touches[0].clientX;lastY=e.touches[0].clientY;movedDist=Math.hypot(e.touches[0].clientX-downX,e.touches[0].clientY-downY);updateCamera();},{passive:true});
 window.addEventListener('touchend',e=>{if(isDragging&&movedDist<6&&e.changedTouches.length)handlePointerTap(e.changedTouches[0].clientX,e.changedTouches[0].clientY);isDragging=false;},{passive:true});
-window.addEventListener('wheel',e=>{camDist=Math.max(2.5,Math.min(14,camDist+e.deltaY*0.01));updateCamera();});
+window.addEventListener('wheel',e=>{camDist=Math.max(5.0,Math.min(20,camDist+e.deltaY*0.01));updateCamera();});
 
 /* ══════════════════════════════════════════════════════
    PAUSE / OVERLAYS / SETTINGS
@@ -1193,33 +1388,28 @@ function scheduleSyncedStart(ts){
 }
 function handleMPMsg(msg){
   if(msg.type==='state'){
-    friendState=msg;updateFriendHUD(msg);
-    if(msg.rotY!==undefined&&friendPivot)friendPivot.rotation.y=msg.rotY;
+    friendState=msg;
+    /* store spin speed and rotation reference — animate() lerps smoothly toward these */
+    if(msg.spinSpeed!==undefined) friendSpinSpeed=msg.spinSpeed;
+    if(msg.rotY!==undefined)      friendRotYRef=msg.rotY;
+    updateFriendHUD(msg);
+    /* DO NOT set friendPivot.rotation.y directly here — that causes the blocky snap */
   }
   else if(msg.type==='gridUpdate'){
-    /* Apply opponent's grid to the friend Three.js scene */
-    if(msg.gd&&friendRenderer){
-      SIDE_FACES.forEach(f=>{
-        if(msg.gd[f])for(let r=0;r<GRID;r++)for(let c=0;c<GRID;c++)friendGridData[f][r][c]=msg.gd[f][r][c];
-        drawFriendFace(f);
-      });
-    }
-    /* Update friend target row from the msg */
+    /* queue the grid redraw so it happens at the start of the next frame,
+       not mid-frame which can cause a visible glitch */
+    if(msg.gd) friendGridPending=msg.gd;
     if(msg.targetSeq){friendState.targetSeq=msg.targetSeq;friendState.found=msg.found||0;updateFriendHUD(friendState);}
   }
   else if(msg.type==='tap'){
-    /* Show opponent's tap flash on the friend box */
     if(friendRenderer){
       const color=msg.correct?THEMES[currentTheme].flashRight:THEMES[currentTheme].flashWrong;
       drawFriendCell(msg.fi,msg.row,msg.col,color);
     }
-    /* Update found index on friend HUD */
     if(msg.correct){friendState.found=(friendState.found||0)+1;updateFriendHUD(friendState);}
   }
   else if(msg.type==='startMatch'){scheduleSyncedStart(msg.ts);}
-  else if(msg.type==='gameover'){/* show on friend pane */
-    document.getElementById('fScore').textContent=msg.score;
-  }
+  else if(msg.type==='gameover'){document.getElementById('fScore').textContent=msg.score;}
 }
 function enterSplitMode(){
   if(!friendRenderer)setupFriendScene();
@@ -1228,14 +1418,16 @@ function enterSplitMode(){
 }
 function exitSplitMode(){document.body.classList.remove('split-mode');resizeRenderer();}
 
-/* Broadcast state + rotY every 200ms (faster for smoother box sync) */
+/* Broadcast state + spinSpeed + rotY at 80ms for smooth opponent box */
 setInterval(()=>{
   if(mpConnected&&gameRunning){
     sendMP({type:'state',score,lives,tier:currentTierKey(),timeLeft,roundTime,
             found:foundIndex,total:targetSequence.length,
-            targetSeq:targetSequence,rotY:pivot.rotation.y});
+            targetSeq:targetSequence,
+            spinSpeed:computeSpin(),   /* friend uses this to predict rotation locally */
+            rotY:pivot.rotation.y});   /* sent as a drift-correction reference only   */
   }
-},200);
+},80);
 
 /* ══════════════════════════════════════════════════════
    RESIZE
@@ -1283,8 +1475,24 @@ function animate(){
   renderer.render(scene,camera);
   /* Render friend scene if split mode is active */
   if(friendRenderer&&document.body.classList.contains('split-mode')){
-    friendPivot.rotation.y=friendRotY;
-    friendPivot.position.y=Math.sin(t*0.8)*0.12;
+    /* Apply any pending grid update at the start of the frame (avoids mid-render glitch) */
+    if(friendGridPending){
+      const gd=friendGridPending; friendGridPending=null;
+      SIDE_FACES.forEach(f=>{
+        if(gd[f])for(let r=0;r<GRID;r++)for(let c=0;c<GRID;c++)friendGridData[f][r][c]=gd[f][r][c];
+        drawFriendFace(f);
+      });
+    }
+    /* Predict rotation locally using friend's spin speed (smooth 60fps)
+       then gently lerp toward the received reference to prevent drift    */
+    friendRotYLocal += friendSpinSpeed;
+    let diff = friendRotYRef - friendRotYLocal;
+    /* Normalise diff to [-PI, PI] so wrap-around doesn't cause a jump */
+    diff = diff - Math.round(diff / (Math.PI*2)) * (Math.PI*2);
+    friendRotYLocal += diff * 0.04;   /* 4% correction per frame — invisible, no snapping */
+
+    friendPivot.rotation.y = friendRotYLocal;
+    friendPivot.position.y = Math.sin(t*0.8)*0.12;
     friendRenderer.render(friendScene,friendCamera);
   }
 }
