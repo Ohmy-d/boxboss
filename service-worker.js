@@ -1,13 +1,22 @@
-/* ═══════════════════════════════════════════════════════════════════════
-   BoxBoss — Service Worker  v7
-   Caches EVERYTHING: game HTML, CDN libraries, and all MP3 music files.
-   After the first successful online load, the game and all its music
-   play fully offline — forever, until you update.
-═══════════════════════════════════════════════════════════════════════ */
+/* ─────────────────────────────────────────────────────────────────────────
+   BoxBoss — Service Worker  v8
+   Full offline support including music.
 
-const CACHE = 'boxboss-v7';
+   The tricky part with audio: browsers stream MP3s using HTTP Range requests
+   (e.g. Range: bytes=0-65536). A standard cache.put() stores the full 200
+   response, but when the browser later asks for a range it expects a 206
+   Partial Content reply — a plain 200 makes most audio engines give up.
 
-/* Core files to pre-cache on install (always available offline) */
+   Fix: for audio files we always fetch the COMPLETE file the first time
+   (stripping the Range header), store that as one clean cache entry, then
+   manually slice the bytes and return a proper 206 for any range request.
+   This makes cached music work exactly like a real server.
+─────────────────────────────────────────────────────────────────────────── */
+
+const CACHE = 'boxboss-v8';
+const AUDIO  = /\.(mp3|ogg|wav|m4a|aac|flac|opus)$/i;
+
+/* Core assets pre-cached at install time */
 const PRECACHE = [
   './',
   './index.html',
@@ -15,23 +24,21 @@ const PRECACHE = [
   './icon-192.png',
   './icon-512.png',
   './manifest.json',
-  /* CDN libraries — cached so the game loads offline */
   'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js',
   'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js',
 ];
 
-/* ── Install: pre-cache core assets ─────────────────────────────────── */
+/* ── Install ─────────────────────────────────────────────────────────── */
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE).then(cache =>
-      /* addAll fails silently per item so a missing icon never blocks install */
-      Promise.allSettled(PRECACHE.map(url => cache.add(url)))
-    ).then(() => self.skipWaiting())
+    caches.open(CACHE)
+      .then(cache => Promise.allSettled(PRECACHE.map(u => cache.add(u))))
+      .then(() => self.skipWaiting())
   );
 });
 
-/* ── Activate: clean up old cache versions ───────────────────────────── */
+/* ── Activate: wipe old caches ───────────────────────────────────────── */
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys()
@@ -42,60 +49,107 @@ self.addEventListener('activate', event => {
   );
 });
 
-/* ── Fetch: cache-first with auto-caching of new resources (MP3s etc.) ─ */
+/* ── Fetch ───────────────────────────────────────────────────────────── */
 self.addEventListener('fetch', event => {
-  /* Only handle GET requests */
   if (event.request.method !== 'GET') return;
-
   const url = new URL(event.request.url);
-
-  /* Skip non-http(s) requests */
   if (!url.protocol.startsWith('http')) return;
 
-  event.respondWith(
-    caches.match(event.request).then(cached => {
-      if (cached) {
-        /* Serve from cache immediately */
-        /* For MP3/audio files also start a background update */
-        const isAudio = /\.(mp3|ogg|wav|m4a|aac)$/i.test(url.pathname);
-        if (isAudio) {
-          /* Background revalidate so music updates when online */
-          fetch(event.request)
-            .then(res => {
-              if (res && res.ok) {
-                caches.open(CACHE).then(c => c.put(event.request, res)).catch(() => {});
-              }
-            })
-            .catch(() => {});
-        }
-        return cached;
-      }
-
-      /* Not cached — fetch from network and cache the response */
-      return fetch(event.request)
-        .then(response => {
-          if (!response || !response.ok) return response;
-
-          /* Cache all successful responses (HTML, JS, MP3, images…) */
-          const toCache = response.clone();
-          caches.open(CACHE)
-            .then(cache => cache.put(event.request, toCache))
-            .catch(() => {});
-
-          return response;
-        })
-        .catch(() => {
-          /* Network failed and nothing cached — return a simple offline stub */
-          if (event.request.destination === 'document') {
-            return caches.match('./index.html');
-          }
-          return new Response('', { status: 503 });
-        });
-    })
-  );
+  if (AUDIO.test(url.pathname)) {
+    /* Audio gets special handling so range requests work offline */
+    event.respondWith(handleAudio(event.request, url));
+  } else {
+    /* Everything else: cache-first, auto-cache on first fetch */
+    event.respondWith(handleNormal(event.request));
+  }
 });
 
-/* ── Message: force update on demand ─────────────────────────────────── */
+/* ── Audio handler ───────────────────────────────────────────────────── */
+async function handleAudio(request, url) {
+  const cache   = await caches.open(CACHE);
+  /* Look for the full file (stored under the plain URL, no Range header) */
+  const fullReq = new Request(url.href);
+  const cached  = await cache.match(fullReq);
+
+  if (cached) {
+    /* Already have the full file — serve range or full response */
+    return serveRange(cached, request.headers.get('Range'));
+  }
+
+  /* First time: fetch the COMPLETE file regardless of what Range was asked */
+  try {
+    const full = await fetch(new Request(url.href, {
+      mode:        'cors',
+      credentials: 'omit',
+      /* intentionally no Range header — we want the whole file */
+    }));
+
+    if (full.ok) {
+      /* Store the full 200 response so future visits are always offline */
+      cache.put(fullReq, full.clone()).catch(() => {});
+      return serveRange(full, request.headers.get('Range'));
+    }
+    return full;
+  } catch {
+    /* Offline and not cached yet */
+    return new Response('', {
+      status:     503,
+      statusText: 'Service Unavailable — play once online to cache this track',
+    });
+  }
+}
+
+/* Build a proper 206 Partial Content (or 200) from a cached full response */
+async function serveRange(fullResponse, rangeHeader) {
+  if (!rangeHeader) {
+    /* No range requested — just return the full file */
+    return fullResponse;
+  }
+
+  const buf   = await fullResponse.arrayBuffer();
+  const total = buf.byteLength;
+  const type  = fullResponse.headers.get('Content-Type') || 'audio/mpeg';
+
+  /* Parse "bytes=start-end" */
+  const m = rangeHeader.match(/bytes=(\d+)-(\d*)/);
+  if (!m) return new Response(buf, { status: 200, headers: { 'Content-Type': type } });
+
+  const start = parseInt(m[1], 10);
+  const end   = m[2] !== '' ? parseInt(m[2], 10) : total - 1;
+  const slice = new Uint8Array(buf, start, end - start + 1);
+
+  return new Response(slice, {
+    status: 206,
+    headers: {
+      'Content-Type':   type,
+      'Content-Range':  `bytes ${start}-${end}/${total}`,
+      'Content-Length': String(slice.byteLength),
+      'Accept-Ranges':  'bytes',
+    },
+  });
+}
+
+/* ── Normal cache-first handler ──────────────────────────────────────── */
+async function handleNormal(request) {
+  const cached = await caches.match(request);
+  if (cached) return cached;
+
+  try {
+    const response = await fetch(request);
+    if (response.ok) {
+      const copy = response.clone();
+      caches.open(CACHE).then(c => c.put(request, copy)).catch(() => {});
+    }
+    return response;
+  } catch {
+    if (request.destination === 'document') {
+      return caches.match('./index.html');
+    }
+    return new Response('', { status: 503 });
+  }
+}
+
+/* ── Message: manual cache refresh ──────────────────────────────────── */
 self.addEventListener('message', event => {
   if (event.data === 'skipWaiting') self.skipWaiting();
 });
